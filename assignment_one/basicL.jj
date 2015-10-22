@@ -1,0 +1,306 @@
+/*******************************
+***** SECTION 1 - OPTIONS *****
+*******************************/
+
+options { JAVA_UNICODE_ESCAPE = true; }
+
+/*********************************
+***** SECTION 2 - USER CODE *****
+*********************************/
+
+PARSER_BEGIN(BASICLTokeniser)
+
+public class BASICLTokeniser 
+{
+	public static void main(String args[]) 
+	{
+		BASICLTokeniser tokeniser;
+		if(args.length == 0) 
+		{
+			System.out.println("Reading from standard input . . .");
+			tokeniser = new BASICLTokeniser(System.in);
+		}else if (args.length == 1) 
+		{
+			try 
+			{
+				tokeniser = new BASICLTokeniser(new java.io.FileInputStream(args[0]));
+			}catch(java.io.FileNotFoundException e) 
+			{
+				System.err.println("File " + args[0] + " not found.");
+				return;
+			}
+		}
+		else 
+		{
+			System.out.println("SLP Tokeniser:  Usage is one of:");
+			System.out.println("         java BASICLTokeniser < inputfile");
+			System.out.println("OR");
+			System.out.println("         java BASICLTokeniser inputfile");
+			return;
+		}
+		/*
+		* We’ve now initialised the tokeniser to read from the approp
+		riate place,
+		* so just keep reading tokens and printing them until we hit EO
+		F
+		*/
+		for (Token t = getNextToken(); t.kind!=EOF; t = getNextToken()) 
+		{
+		// Print out the actual text for the constants, identifiers etc.
+			if (t.kind==NUM)
+			{
+				System.out.print("NUM");
+				System.out.print("("+t.image+") ");
+			}
+			else if (t.kind==ID)
+			{
+				System.out.print("ID");
+				System.out.print("("+t.image+") ");
+			}
+			else if (t.kind==BOOL)
+			{
+				System.out.print("BOOL ");
+			}
+			else if (t.kind==AND)
+			{
+				System.out.print("AND ");
+			}
+			else if (t.kind==CONST)
+			{
+				System.out.print("CONST ");
+			}
+			else if (t.kind==DO)
+			{
+				System.out.print("DO ");
+			}
+			else if (t.kind==ELSE)
+			{
+				System.out.print("ELSE ");
+			}
+			else if (t.kind==FALSE)
+			{
+				System.out.print("FALSE ");
+			}
+			else if (t.kind==IF)
+			{
+				System.out.print("IF ");
+			}
+			else if (t.kind==INT)
+			{
+				System.out.print("INT ");
+			}
+			else if (t.kind==MAIN)
+			{
+				System.out.print("MAIN ");
+			}
+			else if (t.kind==NOT)
+			{
+				System.out.print("NOT ");
+			}
+			else if (t.kind==OR)
+			{
+				System.out.print("OR ");
+			}
+			else if (t.kind==RETURN)
+			{
+				System.out.print("RETURN ");
+			}
+			else if (t.kind==THEN)
+			{
+				System.out.print("THEN ");
+			}
+			else if (t.kind==TRUE)
+			{
+				System.out.print("TRUE ");
+			}
+			else if (t.kind==VAR)
+			{
+				System.out.print("VAR ");
+			}
+			else if (t.kind==VOID)
+			{
+				System.out.print("VOID ");
+			}
+			else if (t.kind==WHILE)
+			{
+				System.out.print("WHILE ");
+			}
+			else if (t.kind==BEGIN)
+			{
+				System.out.print("BEGIN ");
+			}
+			else if (t.kind==END)
+			{
+				System.out.print("END ");
+			}
+			else if (t.kind==PLUS_SIGN)
+			{
+				System.out.print("PLUS_SIGN ");
+			}
+			else if (t.kind==MINUS_SIGN)
+			{
+				System.out.print("MINUS_SIGN ");
+			}
+			else if (t.kind==MULT_SIGN)
+			{
+				System.out.print("MULT_SIGN ");
+			}
+			else if (t.kind==DIV_SIGN)
+			{
+				System.out.print("DIV_SIGN ");
+			}
+			else if (t.kind==EQUALS_SIGN)
+			{
+				System.out.print("EQUALS_SIGN ");
+			}
+			else if (t.kind==NOT_EQUALS_SIGN)
+			{
+				System.out.print("NOT_EQUALS_SIGN ");
+			}
+			else if (t.kind==LESS_THAN)
+			{
+				System.out.print("LESS_THAN ");
+			}
+			else if (t.kind==GREATER_THAN)
+			{
+				System.out.print("GREATER_THAN ");
+			}
+			else if (t.kind==LESS_THAT_EQUALS)
+			{
+				System.out.print("LESS_THAT_EQUALS ");
+			}
+			else if (t.kind==GREATER_THAN_EQUALS)
+			{
+				System.out.print("GREATER_THAN_EQUALS ");
+			}
+			else if (t.kind==LEFT_BRACKET)
+			{
+				System.out.print("LEFT_BRACKET ");
+			}
+			else if (t.kind==RIGHT_BRACKET)
+			{
+				System.out.print("RIGHT_BRACKET ");
+			}
+			else if (t.kind==COMMA)
+			{
+				System.out.print("COMMA ");
+			}
+			else if (t.kind==SEMICOLON)
+			{
+				System.out.print("SEMICOLON ");
+			}
+			else if (t.kind==TYPE_ASSIGN)
+			{
+				System.out.print("TYPE_ASSIGN ");
+			}
+			else if (t.kind==ASSIGN)
+			{
+				System.out.print("ASSIGN ");
+			}
+			else
+				System.out.print(t.image+" ");
+		}
+	}
+}
+PARSER_END(BASICLTokeniser)
+
+
+/****************************************
+***** SECTION 3 - TOKEN DEFINITIONS *****
+****************************************/
+
+TOKEN_MGR_DECLS :
+{
+	static int commentNesting = 0;
+}
+
+SKIP : /* COMMENTS */
+{
+		<"--" (["a" - "z"] | ["A" - "Z"] | ["0" - "9"] | " ")* ("\n" | "\r" |"\r\n")>
+	|	"/*" { commentNesting++; } : IN_COMMENT
+	
+}
+
+<IN_COMMENT> SKIP :
+{
+		"/*" { commentNesting++; }
+	| "*/" { commentNesting--;
+			if (commentNesting == 0)
+				SwitchTo(DEFAULT);
+			}
+	| <~[]>
+}
+
+SKIP : /*** Ignoring spaces/tabs/newlines ***/
+{
+		" "
+	| "\t"
+	| "\n"
+	| "\r"
+	| "\f"
+}
+
+TOKEN : /* Keywords */ 
+{
+		<AND : "and">
+	|	<BOOL : "bool">
+	|	<CONST : "const">
+	|	<DO : "do">
+	|	<ELSE : "else">
+	|	<FALSE : "false">
+	|	<IF : "if">
+	|	<INT : "int">
+	| <MAIN : "main">
+	|	<NOT : "not">
+	| <OR : "or">
+	|	<RETURN : "return">
+	| <THEN : "then">
+	|	<TRUE : "true">
+	| <VAR : "var">
+	| <VOID : "void">
+	| <WHILE : "while">
+	|	<BEGIN : "begin">
+	| <END : "end">
+}
+
+TOKEN : /* Identifiers */
+{
+		<ID : (<CHAR> | "_")+ >
+	|	<#CHAR : ["a" - "z"] | ["A" - "Z"]>
+}
+
+TOKEN : /* Numbers */
+{
+		<NUM : (<DIGIT>)+>
+	|	<#DIGIT : ["0" - "9"]>
+}
+
+TOKEN : /* Operators and Relations */
+{
+		<PLUS_SIGN : "+">
+	|	<MINUS_SIGN : "-">
+	|	<MULT_SIGN : "*">
+	|	<DIV_SIGN : "/">
+	|	<EQUALS_SIGN : "=">
+	| <NOT_EQUALS_SIGN : "!=">
+	|	<LESS_THAN : "<">
+	| <GREATER_THAN : ">">
+	|	<LESS_THAT_EQUALS : "<=">
+	| <GREATER_THAN_EQUALS : ">=">
+	|	<LEFT_BRACKET : "(">
+	|	<RIGHT_BRACKET : ")">
+	|	<COMMA : ",">
+	|	<SEMICOLON : ";">
+	|	<TYPE_ASSIGN : ":">
+	|	<ASSIGN : ":=">
+}
+
+TOKEN : /* Anything not recognised so far */
+{
+	< OTHER : ~[] >
+}
+
+/***********************************
+***** SECTION 4 - THE GRAMMAR *****
+***********************************/
+
