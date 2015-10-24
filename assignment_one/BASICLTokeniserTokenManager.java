@@ -19,6 +19,7 @@ private static final int jjStopStringLiteralDfa_0(int pos, long active0)
          if ((active0 & 0x3ffff800L) != 0L)
          {
             jjmatchedKind = 30;
+            jjmatchedPos = 0;
             return 6;
          }
          return -1;
@@ -95,20 +96,32 @@ static private int jjMoveStringLiteralDfa0_0()
       case 45:
          return jjStartNfaWithStates_0(0, 35, 0);
       case 47:
+         {
          jjmatchedKind = 37;
+         jjmatchedPos = 0;
+         }
          return jjMoveStringLiteralDfa1_0(0x4L);
       case 58:
+         {
          jjmatchedKind = 48;
+         jjmatchedPos = 0;
+         }
          return jjMoveStringLiteralDfa1_0(0x2000000000000L);
       case 59:
          return jjStopAtPos(0, 47);
       case 60:
+         {
          jjmatchedKind = 40;
+         jjmatchedPos = 0;
+         }
          return jjMoveStringLiteralDfa1_0(0x40000000000L);
       case 61:
          return jjStopAtPos(0, 38);
       case 62:
+         {
          jjmatchedKind = 41;
+         jjmatchedPos = 0;
+         }
          return jjMoveStringLiteralDfa1_0(0x80000000000L);
       case 97:
          return jjMoveStringLiteralDfa1_0(0x800L);
@@ -497,7 +510,7 @@ public static final String[] jjstrLiteralImages = {
 "\162\145\164\165\162\156", "\164\150\145\156", "\164\162\165\145", "\166\141\162", "\166\157\151\144", 
 "\167\150\151\154\145", "\142\145\147\151\156", "\145\156\144", null, null, null, null, "\53", "\55", 
 "\52", "\57", "\75", "\41\75", "\74", "\76", "\74\75", "\76\75", "\50", "\51", "\54", 
-"\73", "\72", "\72\75", null, };
+"\73", "\72", "\72\75", null, null, };
 
 /** Lexer state names. */
 public static final String[] lexStateNames = {
@@ -509,10 +522,10 @@ public static final String[] lexStateNames = {
 public static final int[] jjnewLexState = {
    -1, -1, 1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
-   -1, 
+   -1, -1, 
 };
 static final long[] jjtoToken = {
-   0x7fffd7ffff801L, 
+   0xffffd7ffff801L, 
 };
 static final long[] jjtoSkip = {
    0x7feL, 
@@ -578,12 +591,24 @@ static protected Token jjFillToken()
    final int endLine;
    final int beginColumn;
    final int endColumn;
-   String im = jjstrLiteralImages[jjmatchedKind];
-   curTokenImage = (im == null) ? input_stream.GetImage() : im;
-   beginLine = input_stream.getBeginLine();
-   beginColumn = input_stream.getBeginColumn();
-   endLine = input_stream.getEndLine();
-   endColumn = input_stream.getEndColumn();
+   if (jjmatchedPos < 0)
+   {
+      if (image == null)
+         curTokenImage = "";
+      else
+         curTokenImage = image.toString();
+      beginLine = endLine = input_stream.getBeginLine();
+      beginColumn = endColumn = input_stream.getBeginColumn();
+   }
+   else
+   {
+      String im = jjstrLiteralImages[jjmatchedKind];
+      curTokenImage = (im == null) ? input_stream.GetImage() : im;
+      beginLine = input_stream.getBeginLine();
+      beginColumn = input_stream.getBeginColumn();
+      endLine = input_stream.getEndLine();
+      endColumn = input_stream.getEndColumn();
+   }
    t = Token.newToken(jjmatchedKind, curTokenImage);
 
    t.beginLine = beginLine;
@@ -632,12 +657,14 @@ public static Token getNextToken()
              curChar = input_stream.BeginToken();
        }
        catch (java.io.IOException e1) { continue EOFLoop; }
-       jjmatchedKind = 0x7fffffff;
-       jjmatchedPos = 0;
+       jjmatchedKind = 51;
+       jjmatchedPos = -1;
+       curPos = 0;
        curPos = jjMoveStringLiteralDfa0_0();
-       if (jjmatchedPos == 0 && jjmatchedKind > 50)
+       if (jjmatchedPos < 0 || (jjmatchedPos == 0 && jjmatchedKind > 50))
        {
           jjmatchedKind = 50;
+          jjmatchedPos = 0;
        }
        break;
      case 1:
@@ -657,6 +684,7 @@ public static Token getNextToken()
         if ((jjtoToken[jjmatchedKind >> 6] & (1L << (jjmatchedKind & 077))) != 0L)
         {
            matchedToken = jjFillToken();
+           TokenLexicalActions(matchedToken);
        if (jjnewLexState[jjmatchedKind] != -1)
          curLexState = jjnewLexState[jjmatchedKind];
            return matchedToken;
@@ -710,6 +738,14 @@ static void SkipLexicalActions(Token matchedToken)
                         if (commentNesting == 0)
                                 SwitchTo(DEFAULT);
          break;
+      default :
+         break;
+   }
+}
+static void TokenLexicalActions(Token matchedToken)
+{
+   switch(jjmatchedKind)
+   {
       default :
          break;
    }

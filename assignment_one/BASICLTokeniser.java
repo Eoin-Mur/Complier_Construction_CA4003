@@ -50,6 +50,469 @@ public class BASICLTokeniser implements BASICLTokeniserConstants {
                 }
         }
 
+/***********************************
+***** SECTION 4 - THE GRAMMAR *****
+***********************************/
+  static final public void Program() throws ParseException {
+    Decl();
+    label_1:
+    while (true) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case BOOL:
+      case INT:
+      case VOID:
+        ;
+        break;
+      default:
+        jj_la1[0] = jj_gen;
+        break label_1;
+      }
+      Function();
+    }
+    Main_Prog();
+  }
+
+  static final public void Decl() throws ParseException {
+    label_2:
+    while (true) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case CONST:
+      case VAR:
+        ;
+        break;
+      default:
+        jj_la1[1] = jj_gen;
+        break label_2;
+      }
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case VAR:
+        Var_decl();
+        break;
+      case CONST:
+        Const_decl();
+        break;
+      default:
+        jj_la1[2] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+    }
+  }
+
+  static final public void Var_decl() throws ParseException {
+    jj_consume_token(VAR);
+    Ident_list();
+    jj_consume_token(TYPE_ASSIGN);
+    Type();
+    label_3:
+    while (true) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case COMMA:
+        ;
+        break;
+      default:
+        jj_la1[3] = jj_gen;
+        break label_3;
+      }
+      jj_consume_token(COMMA);
+      Ident_list();
+      jj_consume_token(TYPE_ASSIGN);
+      Type();
+    }
+  }
+
+  static final public void Const_decl() throws ParseException {
+    jj_consume_token(CONST);
+    jj_consume_token(ID);
+    jj_consume_token(TYPE_ASSIGN);
+    Type();
+    jj_consume_token(EQUALS_SIGN);
+    Expression();
+    label_4:
+    while (true) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case COMMA:
+        ;
+        break;
+      default:
+        jj_la1[4] = jj_gen;
+        break label_4;
+      }
+      jj_consume_token(COMMA);
+      jj_consume_token(ID);
+      jj_consume_token(TYPE_ASSIGN);
+      Type();
+      jj_consume_token(EQUALS_SIGN);
+      Expression();
+    }
+  }
+
+  static final public void Function() throws ParseException {
+    Type();
+    jj_consume_token(ID);
+    jj_consume_token(LEFT_BRACKET);
+    Param_list();
+    jj_consume_token(RIGHT_BRACKET);
+    jj_consume_token(BEGIN);
+    Decl();
+    label_5:
+    while (true) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case IF:
+      case WHILE:
+      case BEGIN:
+      case ID:
+      case 51:
+        ;
+        break;
+      default:
+        jj_la1[5] = jj_gen;
+        break label_5;
+      }
+      Stamtent();
+      jj_consume_token(SEMICOLON);
+    }
+    jj_consume_token(RETURN);
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case FALSE:
+    case TRUE:
+    case ID:
+    case NUM:
+    case PLUS_SIGN:
+    case MINUS_SIGN:
+      Expression();
+      break;
+    case 51:
+      jj_consume_token(51);
+      break;
+    default:
+      jj_la1[6] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+    jj_consume_token(SEMICOLON);
+    jj_consume_token(END);
+  }
+
+  static final public void Param_list() throws ParseException {
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case ID:
+      jj_consume_token(ID);
+      jj_consume_token(TYPE_ASSIGN);
+      Type();
+      label_6:
+      while (true) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case COMMA:
+          ;
+          break;
+        default:
+          jj_la1[7] = jj_gen;
+          break label_6;
+        }
+        jj_consume_token(COMMA);
+        jj_consume_token(ID);
+        jj_consume_token(TYPE_ASSIGN);
+        Type();
+      }
+      break;
+    case 51:
+      jj_consume_token(51);
+      break;
+    default:
+      jj_la1[8] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+  }
+
+  static final public void Type() throws ParseException {
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case INT:
+      jj_consume_token(INT);
+      break;
+    case BOOL:
+      jj_consume_token(BOOL);
+      break;
+    case VOID:
+      jj_consume_token(VOID);
+      break;
+    default:
+      jj_la1[9] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+  }
+
+  static final public void Main_Prog() throws ParseException {
+    jj_consume_token(MAIN);
+    jj_consume_token(BEGIN);
+    Decl();
+    label_7:
+    while (true) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case IF:
+      case WHILE:
+      case BEGIN:
+      case ID:
+      case 51:
+        ;
+        break;
+      default:
+        jj_la1[10] = jj_gen;
+        break label_7;
+      }
+      Stamtent();
+      jj_consume_token(SEMICOLON);
+    }
+    jj_consume_token(END);
+  }
+
+  static final public void Stamtent() throws ParseException {
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case ID:
+      jj_consume_token(ID);
+      jj_consume_token(ASSIGN);
+      Expression();
+      break;
+      jj_consume_token(ID);
+      jj_consume_token(LEFT_BRACKET);
+      Arg_list();
+      jj_consume_token(RIGHT_BRACKET);
+      break;
+    case BEGIN:
+      jj_consume_token(BEGIN);
+      label_8:
+      while (true) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case LEFT_BRACKET:
+          ;
+          break;
+        default:
+          jj_la1[11] = jj_gen;
+          break label_8;
+        }
+        jj_consume_token(LEFT_BRACKET);
+        Stamtent();
+        jj_consume_token(SEMICOLON);
+        jj_consume_token(RIGHT_BRACKET);
+      }
+      jj_consume_token(END);
+      break;
+    case IF:
+      jj_consume_token(IF);
+      Condition();
+      jj_consume_token(THEN);
+      Stamtent();
+      jj_consume_token(ELSE);
+      Stamtent();
+      break;
+    case WHILE:
+      jj_consume_token(WHILE);
+      Condition();
+      jj_consume_token(DO);
+      Stamtent();
+      break;
+    case 51:
+      jj_consume_token(51);
+      break;
+    default:
+      jj_la1[12] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+  }
+
+  static final public void Expression() throws ParseException {
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case FALSE:
+    case TRUE:
+    case ID:
+    case NUM:
+    case PLUS_SIGN:
+    case MINUS_SIGN:
+      Fragment();
+      label_9:
+      while (true) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case PLUS_SIGN:
+        case MINUS_SIGN:
+        case MULT_SIGN:
+        case DIV_SIGN:
+          ;
+          break;
+        default:
+          jj_la1[13] = jj_gen;
+          break label_9;
+        }
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case PLUS_SIGN:
+          jj_consume_token(PLUS_SIGN);
+          break;
+        case MINUS_SIGN:
+          jj_consume_token(MINUS_SIGN);
+          break;
+        case MULT_SIGN:
+          jj_consume_token(MULT_SIGN);
+          break;
+        case DIV_SIGN:
+          jj_consume_token(DIV_SIGN);
+          break;
+        default:
+          jj_la1[14] = jj_gen;
+          jj_consume_token(-1);
+          throw new ParseException();
+        }
+        Fragment();
+      }
+      break;
+      jj_consume_token(ID);
+      jj_consume_token(LEFT_BRACKET);
+      Arg_list();
+      jj_consume_token(RIGHT_BRACKET);
+      break;
+    default:
+      jj_la1[15] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+  }
+
+  static final public void Fragment() throws ParseException {
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case ID:
+      jj_consume_token(ID);
+      break;
+    case TRUE:
+      jj_consume_token(TRUE);
+      break;
+    case FALSE:
+      jj_consume_token(FALSE);
+      break;
+    case NUM:
+      jj_consume_token(NUM);
+      break;
+    case PLUS_SIGN:
+    case MINUS_SIGN:
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case PLUS_SIGN:
+        jj_consume_token(PLUS_SIGN);
+        break;
+      case MINUS_SIGN:
+        jj_consume_token(MINUS_SIGN);
+        break;
+      default:
+        jj_la1[16] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+      break;
+    default:
+      jj_la1[17] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+  }
+
+  static final public void Condition() throws ParseException {
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case NOT:
+      jj_consume_token(NOT);
+      Expression();
+      break;
+    case FALSE:
+    case TRUE:
+    case ID:
+    case NUM:
+    case PLUS_SIGN:
+    case MINUS_SIGN:
+      Expression();
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case EQUALS_SIGN:
+        jj_consume_token(EQUALS_SIGN);
+        break;
+      case NOT_EQUALS_SIGN:
+        jj_consume_token(NOT_EQUALS_SIGN);
+        break;
+      case LESS_THAN:
+        jj_consume_token(LESS_THAN);
+        break;
+      case GREATER_THAN:
+        jj_consume_token(GREATER_THAN);
+        break;
+      case GREATER_THAN_EQUALS:
+        jj_consume_token(GREATER_THAN_EQUALS);
+        break;
+      case LESS_THAT_EQUALS:
+        jj_consume_token(LESS_THAT_EQUALS);
+        break;
+      case AND:
+        jj_consume_token(AND);
+        break;
+      case OR:
+        jj_consume_token(OR);
+        break;
+      default:
+        jj_la1[18] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+      Expression();
+      break;
+      jj_consume_token(ID);
+      break;
+    default:
+      jj_la1[19] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+  }
+
+  static final public void Ident_list() throws ParseException {
+    jj_consume_token(ID);
+    label_10:
+    while (true) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case COMMA:
+        ;
+        break;
+      default:
+        jj_la1[20] = jj_gen;
+        break label_10;
+      }
+      jj_consume_token(COMMA);
+      jj_consume_token(ID);
+    }
+  }
+
+  static final public void Arg_list() throws ParseException {
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case ID:
+      jj_consume_token(ID);
+      label_11:
+      while (true) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case COMMA:
+          ;
+          break;
+        default:
+          jj_la1[21] = jj_gen;
+          break label_11;
+        }
+        jj_consume_token(COMMA);
+        jj_consume_token(ID);
+      }
+      break;
+    case 51:
+      jj_consume_token(51);
+      break;
+    default:
+      jj_la1[22] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+  }
+
   static private boolean jj_initialized_once = false;
   /** Generated Token Manager. */
   static public BASICLTokeniserTokenManager token_source;
@@ -60,7 +523,7 @@ public class BASICLTokeniser implements BASICLTokeniserConstants {
   static public Token jj_nt;
   static private int jj_ntk;
   static private int jj_gen;
-  static final private int[] jj_la1 = new int[0];
+  static final private int[] jj_la1 = new int[23];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static {
@@ -68,10 +531,10 @@ public class BASICLTokeniser implements BASICLTokeniserConstants {
       jj_la1_init_1();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {};
+      jj_la1_0 = new int[] {0x4041000,0x2002000,0x2002000,0x0,0x0,0x58020000,0x41010000,0x0,0x40000000,0x4041000,0x58020000,0x0,0x58020000,0x0,0x0,0x41010000,0x0,0x41010000,0x200800,0x41110000,0x0,0x0,0x40000000,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {};
+      jj_la1_1 = new int[] {0x0,0x0,0x0,0x4000,0x4000,0x80000,0x8000d,0x4000,0x80000,0x0,0x80000,0x1000,0x80000,0x3c,0x3c,0xd,0xc,0xd,0xfc0,0xd,0x4000,0x4000,0x80000,};
    }
 
   /** Constructor with InputStream. */
@@ -92,7 +555,7 @@ public class BASICLTokeniser implements BASICLTokeniserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 0; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 23; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -106,7 +569,7 @@ public class BASICLTokeniser implements BASICLTokeniserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 0; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 23; i++) jj_la1[i] = -1;
   }
 
   /** Constructor. */
@@ -123,7 +586,7 @@ public class BASICLTokeniser implements BASICLTokeniserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 0; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 23; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -133,7 +596,7 @@ public class BASICLTokeniser implements BASICLTokeniserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 0; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 23; i++) jj_la1[i] = -1;
   }
 
   /** Constructor with generated Token Manager. */
@@ -149,7 +612,7 @@ public class BASICLTokeniser implements BASICLTokeniserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 0; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 23; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -158,7 +621,7 @@ public class BASICLTokeniser implements BASICLTokeniserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 0; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 23; i++) jj_la1[i] = -1;
   }
 
   static private Token jj_consume_token(int kind) throws ParseException {
@@ -209,12 +672,12 @@ public class BASICLTokeniser implements BASICLTokeniserConstants {
   /** Generate ParseException. */
   static public ParseException generateParseException() {
     jj_expentries.clear();
-    boolean[] la1tokens = new boolean[51];
+    boolean[] la1tokens = new boolean[52];
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 0; i++) {
+    for (int i = 0; i < 23; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {
@@ -226,7 +689,7 @@ public class BASICLTokeniser implements BASICLTokeniserConstants {
         }
       }
     }
-    for (int i = 0; i < 51; i++) {
+    for (int i = 0; i < 52; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;

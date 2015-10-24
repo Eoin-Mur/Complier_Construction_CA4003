@@ -164,3 +164,100 @@ TOKEN : /* Anything not recognised so far */
 ***** SECTION 4 - THE GRAMMAR *****
 ***********************************/
 
+void Program() : {}
+{
+	Decl() // fix due to it decl already being declared one or more times no need to re-declare one or more (*)
+	( Function() )*
+	Main_Prog()
+}
+
+void Decl() : {}
+{
+	( Var_decl() | Const_decl() )*
+}
+
+void Var_decl() : {}
+{
+	( <VAR> Ident_list() <TYPE_ASSIGN> Type() ( <COMMA> Ident_list() <TYPE_ASSIGN> Type() )* ) 
+}
+
+void Const_decl() : {}
+{
+	( <CONST> <ID> <TYPE_ASSIGN> Type() <EQUALS_SIGN> Expression() ( <COMMA> <ID> <TYPE_ASSIGN> Type() <EQUALS_SIGN> Expression() )* )
+}
+
+void Function() : {}
+{
+	( Type() <ID> <LEFT_BRACKET> Param_list() <RIGHT_BRACKET> )
+	<BEGIN>
+	Decl() 
+	( Stamtent() <SEMICOLON> ) *
+	(<RETURN> ( Expression() | "" ) <SEMICOLON>)
+	<END>
+}
+
+void Param_list() : {}
+{
+	( <ID> <TYPE_ASSIGN> Type() ( <COMMA> <ID> <TYPE_ASSIGN> Type() )* | "")
+}
+
+void Type() : {}
+{
+		<INT>
+	|	<BOOL>
+	|	<VOID>
+}
+
+void Main_Prog() : {}
+{
+	<MAIN>
+	<BEGIN>
+	 Decl()
+	( Stamtent() <SEMICOLON>)*
+	<END>
+}
+
+void Stamtent() : {}
+{
+		<ID> <ASSIGN> Expression()
+	|	<ID> <LEFT_BRACKET> Arg_list() <RIGHT_BRACKET>
+	|	<BEGIN> ( <LEFT_BRACKET> Stamtent() <SEMICOLON> <RIGHT_BRACKET> )* <END>
+	|	<IF> Condition() <THEN> Stamtent() <ELSE> Stamtent()
+	|	<WHILE> Condition() <DO> Stamtent()
+	| ""
+}
+
+void Expression() : {}
+{
+		Fragment() ( ( <PLUS_SIGN> | <MINUS_SIGN> | <MULT_SIGN> | <DIV_SIGN>) Fragment() )*
+	|	<ID> <LEFT_BRACKET> Arg_list() <RIGHT_BRACKET>
+}
+
+void Fragment() : {}
+{
+		<ID>
+	|	<TRUE>
+	|	<FALSE>
+	|	<NUM>
+	| (<PLUS_SIGN> | <MINUS_SIGN> )
+	|	Fragment() //No Need ?
+	|	Expression() 
+}
+
+
+void Condition() : {}
+{
+		<NOT> Expression()
+	|	Expression() ( <EQUALS_SIGN> | <NOT_EQUALS_SIGN> | <LESS_THAN> | <GREATER_THAN> | <GREATER_THAN_EQUALS> | <LESS_THAT_EQUALS> | <AND> | <OR> ) Expression()
+	|	<ID>
+}
+
+void Ident_list() : {}
+{
+	<ID> ( <COMMA> <ID> )*
+}
+
+void Arg_list() : {}
+{
+	<ID> ( <COMMA> <ID>)*  | ""
+}
