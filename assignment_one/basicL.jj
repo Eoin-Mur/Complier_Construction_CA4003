@@ -238,7 +238,7 @@ void Function() : {}
 	( Type() <ID> <LEFT_BRACKET> Param_list() <RIGHT_BRACKET> )
 	<BEGIN>
 	( Decl() )* 
-	( Stamtent() <SEMICOLON> ) *
+	( Statment() <SEMICOLON> ) *
 	(<RETURN> ( Expression() | {} ) <SEMICOLON>)
 	<END>
 }
@@ -260,19 +260,17 @@ void Main_Prog() : {}
 	<MAIN>
 	<BEGIN>
 	( Decl() )*
-	( Stamtent() <SEMICOLON>)*
+	( Statment() <SEMICOLON>)*
 	<END>
 }
 
-void Stamtent() : {}
+void Statment() : {}
 {
-		LOOKAHEAD(2)
-		<ID> <ASSIGN> Expression()
-	|	<ID> <LEFT_BRACKET> Arg_list() <RIGHT_BRACKET>
-	|	<BEGIN> ( Stamtent() <SEMICOLON> )* <END>
-	|	<IF> Condition() <THEN> Stamtent() <SEMICOLON> <ELSE> Stamtent()
-	|	<WHILE> Condition() <DO> Stamtent()
-	| {}
+		<ID> (<ASSIGN> Expression() | <LEFT_BRACKET> Arg_list() <RIGHT_BRACKET> ) 
+	|	<BEGIN> ( Statment() <SEMICOLON> )* <END>
+	|	<IF> Condition() <THEN> Statment() <SEMICOLON> <ELSE> Statment()
+	|	<WHILE> Condition() <DO> Statment()
+	| {} // this will allow you to just stick aload of semicolons in the file and will parse correctly !!!
 }
 
 
