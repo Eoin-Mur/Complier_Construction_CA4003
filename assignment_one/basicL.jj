@@ -8,6 +8,7 @@ options { JAVA_UNICODE_ESCAPE = true; }
 ***** SECTION 2 - USER CODE *****
 *********************************/
 
+/*
 PARSER_BEGIN(BASICLTokeniser)
 
 public class BASICLTokeniser 
@@ -39,11 +40,9 @@ public class BASICLTokeniser
 			return;
 		}
 		/*
-		* We’ve now initialised the tokeniser to read from the approp
-		riate place,
-		* so just keep reading tokens and printing them until we hit EO
-		F
-		*/
+		* We’ve now initialised the tokeniser to read from the appropriate place,
+		* so just keep reading tokens and printing them until we hit EOF
+		
 		for (Token t = getNextToken(); t.kind!=EOF; t = getNextToken()) 
 		{
 		// Print out the actual text for the constants, identifiers etc.
@@ -63,7 +62,55 @@ public class BASICLTokeniser
 	}
 }
 PARSER_END(BASICLTokeniser)
+*/
 
+PARSER_BEGIN(BASICLInterpreter)
+
+public class BASICLInterpreter 
+{
+	public static void main(String args[]) 
+	{
+		BASICLInterpreter interpreter;
+		if (args.length == 0) 
+		{
+			System.out.println("BASICL Interpreter:  Reading from standard input...");
+			interpreter = new BASICLInterpreter(System.in);
+		} 
+		else if (args.length == 1) 
+		{
+			System.out.println("BASICL Interpreter:  Reading from file " + args[0] + "...");
+			try 
+			{
+				interpreter = new BASICLInterpreter(new java.io.FileInputStream(args[0]));
+			} 
+			catch (java.io.FileNotFoundException e) 
+			{
+				System.out.println("BASICL Interpreter:  File " + args[0] + " not found.");
+				return;
+			}
+		} 
+		else 
+		{
+			System.out.println("BASICL Interpreter:  Usage is one of:");
+			System.out.println("         java BASICLInterpreter < inputfile");
+			System.out.println("OR");
+			System.out.println("         java BASICLInterpreter inputfile");
+			return;
+		}
+		try 
+		{
+			interpreter.Program();
+			System.out.println("BASICL Interpreter: File parse succesfull!");
+		} 
+		catch (ParseException e) 
+		{
+			System.out.println(e.getMessage());
+			System.out.println("BASICL Interpreter:  Encountered errors during parse.");
+		}
+	}
+}
+
+PARSER_END(BASICLInterpreter)
 
 /****************************************
 ***** SECTION 3 - TOKEN DEFINITIONS *****
@@ -166,39 +213,39 @@ TOKEN : /* Anything not recognised so far */
 
 void Program() : {}
 {
-	Decl() // fix due to it decl already being declared one or more times no need to re-declare one or more (*)
+	( Decl() )* // fix due to it decl already being declared one or more times no need to re-declare one or more (*)
 	( Function() )*
 	Main_Prog()
 }
 
 void Decl() : {}
 {
-	( Var_decl() | Const_decl() )*
+	( Var_decl() | Const_decl() )
 }
 
 void Var_decl() : {}
 {
-	( <VAR> Ident_list() <TYPE_ASSIGN> Type() ( <COMMA> Ident_list() <TYPE_ASSIGN> Type() )* ) 
+	<VAR> Ident_list() <TYPE_ASSIGN> Type() ( <COMMA> Ident_list() <TYPE_ASSIGN> Type() )* <SEMICOLON>
 }
 
 void Const_decl() : {}
 {
-	( <CONST> <ID> <TYPE_ASSIGN> Type() <EQUALS_SIGN> Expression() ( <COMMA> <ID> <TYPE_ASSIGN> Type() <EQUALS_SIGN> Expression() )* )
+	( <CONST> <ID> <TYPE_ASSIGN> Type() <EQUALS_SIGN> Expression() ( <COMMA> <ID> <TYPE_ASSIGN> Type() <EQUALS_SIGN> Expression() )* <SEMICOLON>)
 }
 
 void Function() : {}
 {
 	( Type() <ID> <LEFT_BRACKET> Param_list() <RIGHT_BRACKET> )
 	<BEGIN>
-	Decl() 
+	( Decl() )* 
 	( Stamtent() <SEMICOLON> ) *
-	(<RETURN> ( Expression() | "" ) <SEMICOLON>)
+	(<RETURN> ( Expression() | {} ) <SEMICOLON>)
 	<END>
 }
 
 void Param_list() : {}
 {
-	( <ID> <TYPE_ASSIGN> Type() ( <COMMA> <ID> <TYPE_ASSIGN> Type() )* | "")
+	( <ID> <TYPE_ASSIGN> Type() ( <COMMA> <ID> <TYPE_ASSIGN> Type() )* | {})
 }
 
 void Type() : {}
@@ -212,25 +259,39 @@ void Main_Prog() : {}
 {
 	<MAIN>
 	<BEGIN>
-	 Decl()
+	( Decl() )*
 	( Stamtent() <SEMICOLON>)*
 	<END>
 }
 
 void Stamtent() : {}
 {
+		LOOKAHEAD(2)
 		<ID> <ASSIGN> Expression()
 	|	<ID> <LEFT_BRACKET> Arg_list() <RIGHT_BRACKET>
-	|	<BEGIN> ( <LEFT_BRACKET> Stamtent() <SEMICOLON> <RIGHT_BRACKET> )* <END>
-	|	<IF> Condition() <THEN> Stamtent() <ELSE> Stamtent()
+	|	<BEGIN> ( Stamtent() <SEMICOLON> )* <END>
+	|	<IF> Condition() <THEN> Stamtent() <SEMICOLON> <ELSE> Stamtent()
 	|	<WHILE> Condition() <DO> Stamtent()
-	| ""
+	| {}
 }
+
 
 void Expression() : {}
 {
-		Fragment() ( ( <PLUS_SIGN> | <MINUS_SIGN> | <MULT_SIGN> | <DIV_SIGN>) Fragment() )*
-	|	<ID> <LEFT_BRACKET> Arg_list() <RIGHT_BRACKET>
+		LOOKAHEAD(2)
+		<ID> <LEFT_BRACKET> Arg_list() <RIGHT_BRACKET>
+	|	Expression1() ( Opp() Expression1() ) *
+
+}
+
+void Expression1() : {}
+{
+	Fragment()
+}
+
+void Opp() : {}
+{
+	<PLUS_SIGN> | <MINUS_SIGN> | <MULT_SIGN> | <DIV_SIGN>
 }
 
 void Fragment() : {}
@@ -240,16 +301,17 @@ void Fragment() : {}
 	|	<FALSE>
 	|	<NUM>
 	| (<PLUS_SIGN> | <MINUS_SIGN> )
-	|	Fragment() //No Need ?
-	|	Expression() 
+	| <LEFT_BRACKET> Expression() <RIGHT_BRACKET>
 }
 
 
 void Condition() : {}
 {
-		<NOT> Expression()
-	|	Expression() ( <EQUALS_SIGN> | <NOT_EQUALS_SIGN> | <LESS_THAN> | <GREATER_THAN> | <GREATER_THAN_EQUALS> | <LESS_THAT_EQUALS> | <AND> | <OR> ) Expression()
-	|	<ID>
+		<NOT> Condition()
+	//|	<ID> <LEFT_BRACKET> Arg_list() <RIGHT_BRACKET>
+	|	Expression() ( ( <EQUALS_SIGN> | <NOT_EQUALS_SIGN> | <LESS_THAN> | <GREATER_THAN> | <GREATER_THAN_EQUALS> | <LESS_THAT_EQUALS> | <AND> | <OR>) Expression() ) *
+	//|	Condition2() <AND> | <OR>  Condition2()
+	//|	<ID> <LEFT_BRACKET> Arg_list() <RIGHT_BRACKET> // this stuff is added above wit the addition to the *
 }
 
 void Ident_list() : {}
@@ -259,5 +321,5 @@ void Ident_list() : {}
 
 void Arg_list() : {}
 {
-	<ID> ( <COMMA> <ID>)*  | ""
+	(<ID> ( <COMMA> <ID>)*  | {})
 }
