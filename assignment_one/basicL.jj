@@ -172,7 +172,7 @@ TOKEN : /* Keywords */
 
 TOKEN : /* Identifiers */
 {
-		<ID : (<CHAR> | "_")+ >
+		<ID : <CHAR> (<DIGIT> | <CHAR> | "_" )* >
 	|	<#CHAR : ["a" - "z"] | ["A" - "Z"]>
 }
 
