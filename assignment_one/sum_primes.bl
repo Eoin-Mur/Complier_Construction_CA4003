@@ -19,7 +19,7 @@ begin
        i := 2;
        res := true;
 
-       while i*i < x and res = true do
+       while (i*i < x) and res = true do
        begin
          if x - (x/i)*i = 0
          then

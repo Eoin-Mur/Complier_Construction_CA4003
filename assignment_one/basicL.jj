@@ -170,7 +170,11 @@ TOKEN : /* Keywords */
 	| <END : "end">
 }
 
-
+ TOKEN : /* Identifiers */
+ {
+		<ID : <CHAR> (<DIGIT> | <CHAR> | "_" )* >
+ 	|	<#CHAR : ["a" - "z"] | ["A" - "Z"]>
+ }
 
 TOKEN : /* Numbers */
 {
@@ -303,7 +307,7 @@ void Condition() : {}
 {
 		<NOT> Condition()
 	//|	<ID> <LEFT_BRACKET> Arg_list() <RIGHT_BRACKET>
-	|	Expression() ( ( <EQUALS_SIGN> | <NOT_EQUALS_SIGN> | <LESS_THAN> | <GREATER_THAN> | <GREATER_THAN_EQUALS> | <LESS_THAT_EQUALS> | <AND> | <OR>) Expression() ) *
+	| [<LEFT_BRACKET>]	Expression() ( ( <EQUALS_SIGN> | <NOT_EQUALS_SIGN> | <LESS_THAN> | <GREATER_THAN> | <GREATER_THAN_EQUALS> | <LESS_THAT_EQUALS> | <AND> | <OR>) Expression() [<RIGHT_BRACKET>]) *
 	//|	Condition2() <AND> | <OR>  Condition2()
 	//|	<ID> <LEFT_BRACKET> Arg_list() <RIGHT_BRACKET> // this stuff is added above wit the addition to the *
 }

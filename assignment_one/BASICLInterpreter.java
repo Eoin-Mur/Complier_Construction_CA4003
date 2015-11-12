@@ -460,6 +460,14 @@ public class BASICLInterpreter implements BASICLInterpreterConstants {
     case PLUS_SIGN:
     case MINUS_SIGN:
     case LEFT_BRACKET:
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case LEFT_BRACKET:
+        jj_consume_token(LEFT_BRACKET);
+        break;
+      default:
+        jj_la1[21] = jj_gen;
+        ;
+      }
       Expression();
       label_12:
       while (true) {
@@ -475,7 +483,7 @@ public class BASICLInterpreter implements BASICLInterpreterConstants {
           ;
           break;
         default:
-          jj_la1[21] = jj_gen;
+          jj_la1[22] = jj_gen;
           break label_12;
         }
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -504,15 +512,23 @@ public class BASICLInterpreter implements BASICLInterpreterConstants {
           jj_consume_token(OR);
           break;
         default:
-          jj_la1[22] = jj_gen;
+          jj_la1[23] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
         Expression();
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case RIGHT_BRACKET:
+          jj_consume_token(RIGHT_BRACKET);
+          break;
+        default:
+          jj_la1[24] = jj_gen;
+          ;
+        }
       }
       break;
     default:
-      jj_la1[23] = jj_gen;
+      jj_la1[25] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -527,7 +543,7 @@ public class BASICLInterpreter implements BASICLInterpreterConstants {
         ;
         break;
       default:
-        jj_la1[24] = jj_gen;
+        jj_la1[26] = jj_gen;
         break label_13;
       }
       jj_consume_token(COMMA);
@@ -546,7 +562,7 @@ public class BASICLInterpreter implements BASICLInterpreterConstants {
           ;
           break;
         default:
-          jj_la1[25] = jj_gen;
+          jj_la1[27] = jj_gen;
           break label_14;
         }
         jj_consume_token(COMMA);
@@ -554,7 +570,7 @@ public class BASICLInterpreter implements BASICLInterpreterConstants {
       }
       break;
     default:
-      jj_la1[26] = jj_gen;
+      jj_la1[28] = jj_gen;
 
     }
   }
@@ -584,7 +600,7 @@ public class BASICLInterpreter implements BASICLInterpreterConstants {
   static private Token jj_scanpos, jj_lastpos;
   static private int jj_la;
   static private int jj_gen;
-  static final private int[] jj_la1 = new int[27];
+  static final private int[] jj_la1 = new int[29];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static {
@@ -592,10 +608,10 @@ public class BASICLInterpreter implements BASICLInterpreterConstants {
       jj_la1_init_1();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x2002000,0x4041000,0x2002000,0x0,0x0,0x2002000,0x58020000,0x41010000,0x0,0x40000000,0x4041000,0x2002000,0x58020000,0x0,0x58020000,0x58020000,0x0,0x41010000,0x0,0x0,0x41010000,0x200800,0x200800,0x41110000,0x0,0x0,0x40000000,};
+      jj_la1_0 = new int[] {0x2002000,0x4041000,0x2002000,0x0,0x0,0x2002000,0x58020000,0x41010000,0x0,0x40000000,0x4041000,0x2002000,0x58020000,0x0,0x58020000,0x58020000,0x0,0x41010000,0x0,0x0,0x41010000,0x0,0x200800,0x200800,0x0,0x41110000,0x0,0x0,0x40000000,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x0,0x0,0x0,0x4000,0x4000,0x0,0x8000,0x100d,0x4000,0x0,0x0,0x0,0x8000,0x21000,0x8000,0x0,0x3c,0x100d,0x3c,0xc,0x100d,0xfc0,0xfc0,0x100d,0x4000,0x4000,0x0,};
+      jj_la1_1 = new int[] {0x0,0x0,0x0,0x4000,0x4000,0x0,0x8000,0x100d,0x4000,0x0,0x0,0x0,0x8000,0x21000,0x8000,0x0,0x3c,0x100d,0x3c,0xc,0x100d,0x1000,0xfc0,0xfc0,0x2000,0x100d,0x4000,0x4000,0x0,};
    }
   static final private JJCalls[] jj_2_rtns = new JJCalls[1];
   static private boolean jj_rescan = false;
@@ -619,7 +635,7 @@ public class BASICLInterpreter implements BASICLInterpreterConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 27; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 29; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -634,7 +650,7 @@ public class BASICLInterpreter implements BASICLInterpreterConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 27; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 29; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -652,7 +668,7 @@ public class BASICLInterpreter implements BASICLInterpreterConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 27; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 29; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -663,7 +679,7 @@ public class BASICLInterpreter implements BASICLInterpreterConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 27; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 29; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -680,7 +696,7 @@ public class BASICLInterpreter implements BASICLInterpreterConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 27; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 29; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -690,7 +706,7 @@ public class BASICLInterpreter implements BASICLInterpreterConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 27; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 29; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -807,7 +823,7 @@ public class BASICLInterpreter implements BASICLInterpreterConstants {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 27; i++) {
+    for (int i = 0; i < 29; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {
