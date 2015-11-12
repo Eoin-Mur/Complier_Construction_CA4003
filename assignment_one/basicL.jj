@@ -170,11 +170,7 @@ TOKEN : /* Keywords */
 	| <END : "end">
 }
 
-TOKEN : /* Identifiers */
-{
-		<ID : <CHAR> (<DIGIT> | <CHAR> | "_" )* >
-	|	<#CHAR : ["a" - "z"] | ["A" - "Z"]>
-}
+
 
 TOKEN : /* Numbers */
 {
