@@ -118,6 +118,11 @@ public class BASICLInterpreter
 					{
 						System.out.print("ID");
 						System.out.print("("+t.image+") ");
+					} 
+					else if (t.kind==OTHER)
+					{
+						System.out.print("Not recognised");
+						System.out.print("("+t.image+") ");
 					}
 					else
 						System.out.print(t.image+" ");
@@ -193,6 +198,7 @@ TOKEN : /* Keywords */
 	|	<FALSE : "false">
 	|	<IF : "if">
 	|	<INT : "int">
+	| <DOUBLE: "double">
 	| <MAIN : "main">
 	|	<NOT : "not">
 	| <OR : "or">
@@ -215,6 +221,7 @@ TOKEN : /* Keywords */
 TOKEN : /* Numbers */
 {
 		<NUM : (<DIGIT>)+>
+	|	<REAL: ( (<DIGIT>)+ "." (<DIGIT>)*) | ((<DIGIT>)* "." (<DIGIT>)+) >
 	|	<#DIGIT : ["0" - "9"]>
 }
 
@@ -287,6 +294,7 @@ void Param_list() : {}
 void Type() : {}
 {
 		<INT>
+	| <DOUBLE>
 	|	<BOOL>
 	|	<VOID>
 }
@@ -302,7 +310,7 @@ void Main_Prog() : {}
 
 void Statment() : {}
 {
-		<ID> (<ASSIGN> Expression() | <LEFT_BRACKET> Arg_list() <RIGHT_BRACKET> ) 
+		<ID> (<ASSIGN> Expression() | Arg_list() ) 
 	|	<BEGIN> ( Statment() <SEMICOLON> )* <END>
 	|	<IF> Condition() <THEN> Statment() <SEMICOLON> <ELSE> Statment()
 	|	<WHILE> Condition() <DO> Statment()
@@ -331,18 +339,27 @@ void Fragment() : {}
 		<TRUE>
 	|	<FALSE>
 	|	<NUM>
+	| <REAL>
 	| <LEFT_BRACKET> Expression() <RIGHT_BRACKET>
+}
+
+void BoolOpp() : {}
+{
+		<EQUALS_SIGN> 
+	| <NOT_EQUALS_SIGN> 
+	| <LESS_THAN> 
+	| <GREATER_THAN> 
+	| <GREATER_THAN_EQUALS> 
+	| <LESS_THAT_EQUALS> 
+	| <AND> 
+	| <OR>
 }
 
 
 void Condition() : {}
 {
 		<NOT> Condition()
-	|	Arg_list()
-	//| <LEFT_BRACKET>	Expression() ( ( <EQUALS_SIGN> | <NOT_EQUALS_SIGN> | <LESS_THAN> | <GREATER_THAN> | <GREATER_THAN_EQUALS> | <LESS_THAT_EQUALS> | <AND> | <OR>) Expression() <RIGHT_BRACKET>) *
-	| [<LEFT_BRACKET>] Expression() ( ( <EQUALS_SIGN> | <NOT_EQUALS_SIGN> | <LESS_THAN> | <GREATER_THAN> | <GREATER_THAN_EQUALS> | <LESS_THAT_EQUALS> | <AND> | <OR>) Expression()  [<RIGHT_BRACKET>] ) *
-	//|	Condition() <AND> | <OR>  Condition()
-	//|	<ID> <LEFT_BRACKET> Arg_list() <RIGHT_BRACKET> // this stuff is added above wit the addition to the *
+	| [<LEFT_BRACKET>] Expression() ( ( BoolOpp() ) Expression()  [<RIGHT_BRACKET>] ) *
 }
 
 void Ident_list() : {}

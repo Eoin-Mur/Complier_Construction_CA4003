@@ -25,69 +25,73 @@ public interface BASICLInterpreterConstants {
   /** RegularExpression Id. */
   int INT = 18;
   /** RegularExpression Id. */
-  int MAIN = 19;
+  int DOUBLE = 19;
   /** RegularExpression Id. */
-  int NOT = 20;
+  int MAIN = 20;
   /** RegularExpression Id. */
-  int OR = 21;
+  int NOT = 21;
   /** RegularExpression Id. */
-  int RETURN = 22;
+  int OR = 22;
   /** RegularExpression Id. */
-  int THEN = 23;
+  int RETURN = 23;
   /** RegularExpression Id. */
-  int TRUE = 24;
+  int THEN = 24;
   /** RegularExpression Id. */
-  int VAR = 25;
+  int TRUE = 25;
   /** RegularExpression Id. */
-  int VOID = 26;
+  int VAR = 26;
   /** RegularExpression Id. */
-  int WHILE = 27;
+  int VOID = 27;
   /** RegularExpression Id. */
-  int BEGIN = 28;
+  int WHILE = 28;
   /** RegularExpression Id. */
-  int END = 29;
+  int BEGIN = 29;
   /** RegularExpression Id. */
-  int ID = 30;
+  int END = 30;
   /** RegularExpression Id. */
-  int CHAR = 31;
+  int ID = 31;
   /** RegularExpression Id. */
-  int NUM = 32;
+  int CHAR = 32;
   /** RegularExpression Id. */
-  int DIGIT = 33;
+  int NUM = 33;
   /** RegularExpression Id. */
-  int PLUS_SIGN = 34;
+  int REAL = 34;
   /** RegularExpression Id. */
-  int MINUS_SIGN = 35;
+  int DIGIT = 35;
   /** RegularExpression Id. */
-  int MULT_SIGN = 36;
+  int PLUS_SIGN = 36;
   /** RegularExpression Id. */
-  int DIV_SIGN = 37;
+  int MINUS_SIGN = 37;
   /** RegularExpression Id. */
-  int EQUALS_SIGN = 38;
+  int MULT_SIGN = 38;
   /** RegularExpression Id. */
-  int NOT_EQUALS_SIGN = 39;
+  int DIV_SIGN = 39;
   /** RegularExpression Id. */
-  int LESS_THAN = 40;
+  int EQUALS_SIGN = 40;
   /** RegularExpression Id. */
-  int GREATER_THAN = 41;
+  int NOT_EQUALS_SIGN = 41;
   /** RegularExpression Id. */
-  int LESS_THAT_EQUALS = 42;
+  int LESS_THAN = 42;
   /** RegularExpression Id. */
-  int GREATER_THAN_EQUALS = 43;
+  int GREATER_THAN = 43;
   /** RegularExpression Id. */
-  int LEFT_BRACKET = 44;
+  int LESS_THAT_EQUALS = 44;
   /** RegularExpression Id. */
-  int RIGHT_BRACKET = 45;
+  int GREATER_THAN_EQUALS = 45;
   /** RegularExpression Id. */
-  int COMMA = 46;
+  int LEFT_BRACKET = 46;
   /** RegularExpression Id. */
-  int SEMICOLON = 47;
+  int RIGHT_BRACKET = 47;
   /** RegularExpression Id. */
-  int TYPE_ASSIGN = 48;
+  int COMMA = 48;
   /** RegularExpression Id. */
-  int ASSIGN = 49;
+  int SEMICOLON = 49;
   /** RegularExpression Id. */
-  int OTHER = 50;
+  int TYPE_ASSIGN = 50;
+  /** RegularExpression Id. */
+  int ASSIGN = 51;
+  /** RegularExpression Id. */
+  int OTHER = 52;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -115,6 +119,7 @@ public interface BASICLInterpreterConstants {
     "\"false\"",
     "\"if\"",
     "\"int\"",
+    "\"double\"",
     "\"main\"",
     "\"not\"",
     "\"or\"",
@@ -129,6 +134,7 @@ public interface BASICLInterpreterConstants {
     "<ID>",
     "<CHAR>",
     "<NUM>",
+    "<REAL>",
     "<DIGIT>",
     "\"+\"",
     "\"-\"",
