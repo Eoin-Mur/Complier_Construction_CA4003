@@ -8,7 +8,7 @@ public class BASICLInterpreter implements BASICLInterpreterConstants {
                         System.out.println("BASICL Interpreter:  Reading from standard input...");
                         interpreter = new BASICLInterpreter(System.in);
                 }
-                else if (args.length == 1)
+                else if (args.length >= 1)
                 {
                         System.out.println("BASICL Interpreter:  Reading from file " + args[0] + "...");
                         try
@@ -26,18 +26,54 @@ public class BASICLInterpreter implements BASICLInterpreterConstants {
                         System.out.println("BASICL Interpreter:  Usage is one of:");
                         System.out.println("         java BASICLInterpreter < inputfile");
                         System.out.println("OR");
-                        System.out.println("         java BASICLInterpreter inputfile");
+                        System.out.println("         java BASICLInterpreter inputfile [OPTION]");
+                        System.out.println("[OPTION]");
+                        System.out.println("         -L : Lexical Analysis of input file");
                         return;
                 }
-                try
+                if (args.length == 2)
                 {
-                        interpreter.Program();
-                        System.out.println("BASICL Interpreter: File parse succesfull!");
-                }
-                catch (ParseException e)
+                        if(args[1].equals("-L"))
+                        {
+                                System.out.println("------------------------------------------");
+                                System.out.println("-------------Lexical Analysis-------------");
+                                System.out.println("------------------------------------------");
+                                for (Token t = getNextToken(); t.kind!=EOF; t = getNextToken())
+                                {
+                                // Print out the actual text for the constants, identifiers etc.
+                                        if (t.kind==NUM)
+                                        {
+                                                System.out.print("NUM");
+                                                System.out.print("("+t.image+") ");
+                                        }
+                                        else if (t.kind==ID)
+                                        {
+                                                System.out.print("ID");
+                                                System.out.print("("+t.image+") ");
+                                        }
+                                        else
+                                                System.out.print(t.image+" ");
+                                }
+                        }else{
+                                System.out.println("BASICL Interpreter:  Usage is one of:");
+                                System.out.println("         java BASICLInterpreter < inputfile");
+                                System.out.println("OR");
+                                System.out.println("         java BASICLInterpreter inputfile [OPTION]");
+                                System.out.println("[OPTION]");
+                                System.out.println("         -L : Lexical Analysis of input file");
+                        }
+                }else
                 {
-                        System.out.println(e.getMessage());
-                        System.out.println("BASICL Interpreter:  Encountered errors during parse.");
+                        try
+                        {
+                                interpreter.Program();
+                                System.out.println("BASICL Interpreter: File parse succesfull!");
+                        }
+                        catch (ParseException e)
+                        {
+                                System.out.println(e.getMessage());
+                                System.out.println("BASICL Interpreter:  Encountered errors during parse.");
+                        }
                 }
         }
 
@@ -183,8 +219,6 @@ public class BASICLInterpreter implements BASICLInterpreterConstants {
     case TRUE:
     case ID:
     case NUM:
-    case PLUS_SIGN:
-    case MINUS_SIGN:
     case LEFT_BRACKET:
       Expression();
       break;
@@ -341,48 +375,46 @@ public class BASICLInterpreter implements BASICLInterpreterConstants {
   }
 
   static final public void Expression() throws ParseException {
-    if (jj_2_1(2)) {
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case ID:
       jj_consume_token(ID);
-      jj_consume_token(LEFT_BRACKET);
-      Arg_list();
-      jj_consume_token(RIGHT_BRACKET);
-    } else {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case FALSE:
-      case TRUE:
-      case ID:
-      case NUM:
-      case PLUS_SIGN:
-      case MINUS_SIGN:
       case LEFT_BRACKET:
-        Expression1();
-        label_11:
-        while (true) {
-          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-          case PLUS_SIGN:
-          case MINUS_SIGN:
-          case MULT_SIGN:
-          case DIV_SIGN:
-            ;
-            break;
-          default:
-            jj_la1[16] = jj_gen;
-            break label_11;
-          }
-          Opp();
-          Expression1();
-        }
+        Arg_list();
         break;
       default:
-        jj_la1[17] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
+        jj_la1[16] = jj_gen;
+        ;
       }
+      Expression1();
+      break;
+    case FALSE:
+    case TRUE:
+    case NUM:
+    case LEFT_BRACKET:
+      Fragment();
+      Expression1();
+      break;
+    default:
+      jj_la1[17] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
     }
   }
 
   static final public void Expression1() throws ParseException {
-    Fragment();
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case PLUS_SIGN:
+    case MINUS_SIGN:
+    case MULT_SIGN:
+    case DIV_SIGN:
+      Opp();
+      Expression();
+      break;
+    default:
+      jj_la1[18] = jj_gen;
+
+    }
   }
 
   static final public void Opp() throws ParseException {
@@ -400,7 +432,7 @@ public class BASICLInterpreter implements BASICLInterpreterConstants {
       jj_consume_token(DIV_SIGN);
       break;
     default:
-      jj_la1[18] = jj_gen;
+      jj_la1[19] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -408,9 +440,6 @@ public class BASICLInterpreter implements BASICLInterpreterConstants {
 
   static final public void Fragment() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case ID:
-      jj_consume_token(ID);
-      break;
     case TRUE:
       jj_consume_token(TRUE);
       break;
@@ -419,21 +448,6 @@ public class BASICLInterpreter implements BASICLInterpreterConstants {
       break;
     case NUM:
       jj_consume_token(NUM);
-      break;
-    case PLUS_SIGN:
-    case MINUS_SIGN:
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case PLUS_SIGN:
-        jj_consume_token(PLUS_SIGN);
-        break;
-      case MINUS_SIGN:
-        jj_consume_token(MINUS_SIGN);
-        break;
-      default:
-        jj_la1[19] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
       break;
     case LEFT_BRACKET:
       jj_consume_token(LEFT_BRACKET);
@@ -453,13 +467,13 @@ public class BASICLInterpreter implements BASICLInterpreterConstants {
       jj_consume_token(NOT);
       Condition();
       break;
+    case LEFT_BRACKET:
+      Arg_list();
+      break;
     case FALSE:
     case TRUE:
     case ID:
     case NUM:
-    case PLUS_SIGN:
-    case MINUS_SIGN:
-    case LEFT_BRACKET:
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case LEFT_BRACKET:
         jj_consume_token(LEFT_BRACKET);
@@ -469,7 +483,7 @@ public class BASICLInterpreter implements BASICLInterpreterConstants {
         ;
       }
       Expression();
-      label_12:
+      label_11:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case AND:
@@ -484,7 +498,7 @@ public class BASICLInterpreter implements BASICLInterpreterConstants {
           break;
         default:
           jj_la1[22] = jj_gen;
-          break label_12;
+          break label_11;
         }
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case EQUALS_SIGN:
@@ -536,7 +550,7 @@ public class BASICLInterpreter implements BASICLInterpreterConstants {
 
   static final public void Ident_list() throws ParseException {
     jj_consume_token(ID);
-    label_13:
+    label_12:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case COMMA:
@@ -544,7 +558,7 @@ public class BASICLInterpreter implements BASICLInterpreterConstants {
         break;
       default:
         jj_la1[26] = jj_gen;
-        break label_13;
+        break label_12;
       }
       jj_consume_token(COMMA);
       jj_consume_token(ID);
@@ -552,10 +566,11 @@ public class BASICLInterpreter implements BASICLInterpreterConstants {
   }
 
   static final public void Arg_list() throws ParseException {
+    jj_consume_token(LEFT_BRACKET);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case ID:
       jj_consume_token(ID);
-      label_14:
+      label_13:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case COMMA:
@@ -563,7 +578,7 @@ public class BASICLInterpreter implements BASICLInterpreterConstants {
           break;
         default:
           jj_la1[27] = jj_gen;
-          break label_14;
+          break label_13;
         }
         jj_consume_token(COMMA);
         jj_consume_token(ID);
@@ -573,19 +588,7 @@ public class BASICLInterpreter implements BASICLInterpreterConstants {
       jj_la1[28] = jj_gen;
 
     }
-  }
-
-  static private boolean jj_2_1(int xla) {
-    jj_la = xla; jj_lastpos = jj_scanpos = token;
-    try { return !jj_3_1(); }
-    catch(LookaheadSuccess ls) { return true; }
-    finally { jj_save(0, xla); }
-  }
-
-  static private boolean jj_3_1() {
-    if (jj_scan_token(ID)) return true;
-    if (jj_scan_token(LEFT_BRACKET)) return true;
-    return false;
+    jj_consume_token(RIGHT_BRACKET);
   }
 
   static private boolean jj_initialized_once = false;
@@ -597,8 +600,6 @@ public class BASICLInterpreter implements BASICLInterpreterConstants {
   /** Next token. */
   static public Token jj_nt;
   static private int jj_ntk;
-  static private Token jj_scanpos, jj_lastpos;
-  static private int jj_la;
   static private int jj_gen;
   static final private int[] jj_la1 = new int[29];
   static private int[] jj_la1_0;
@@ -608,14 +609,11 @@ public class BASICLInterpreter implements BASICLInterpreterConstants {
       jj_la1_init_1();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x2002000,0x4041000,0x2002000,0x0,0x0,0x2002000,0x58020000,0x41010000,0x0,0x40000000,0x4041000,0x2002000,0x58020000,0x0,0x58020000,0x58020000,0x0,0x41010000,0x0,0x0,0x41010000,0x0,0x200800,0x200800,0x0,0x41110000,0x0,0x0,0x40000000,};
+      jj_la1_0 = new int[] {0x2002000,0x4041000,0x2002000,0x0,0x0,0x2002000,0x58020000,0x41010000,0x0,0x40000000,0x4041000,0x2002000,0x58020000,0x0,0x58020000,0x58020000,0x0,0x41010000,0x0,0x0,0x1010000,0x0,0x200800,0x200800,0x0,0x41110000,0x0,0x0,0x40000000,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x0,0x0,0x0,0x4000,0x4000,0x0,0x8000,0x100d,0x4000,0x0,0x0,0x0,0x8000,0x21000,0x8000,0x0,0x3c,0x100d,0x3c,0xc,0x100d,0x1000,0xfc0,0xfc0,0x2000,0x100d,0x4000,0x4000,0x0,};
+      jj_la1_1 = new int[] {0x0,0x0,0x0,0x4000,0x4000,0x0,0x8000,0x1001,0x4000,0x0,0x0,0x0,0x8000,0x21000,0x8000,0x0,0x1000,0x1001,0x3c,0x3c,0x1001,0x1000,0xfc0,0xfc0,0x2000,0x1001,0x4000,0x4000,0x0,};
    }
-  static final private JJCalls[] jj_2_rtns = new JJCalls[1];
-  static private boolean jj_rescan = false;
-  static private int jj_gc = 0;
 
   /** Constructor with InputStream. */
   public BASICLInterpreter(java.io.InputStream stream) {
@@ -636,7 +634,6 @@ public class BASICLInterpreter implements BASICLInterpreterConstants {
     jj_ntk = -1;
     jj_gen = 0;
     for (int i = 0; i < 29; i++) jj_la1[i] = -1;
-    for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
   /** Reinitialise. */
@@ -651,7 +648,6 @@ public class BASICLInterpreter implements BASICLInterpreterConstants {
     jj_ntk = -1;
     jj_gen = 0;
     for (int i = 0; i < 29; i++) jj_la1[i] = -1;
-    for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
   /** Constructor. */
@@ -669,7 +665,6 @@ public class BASICLInterpreter implements BASICLInterpreterConstants {
     jj_ntk = -1;
     jj_gen = 0;
     for (int i = 0; i < 29; i++) jj_la1[i] = -1;
-    for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
   /** Reinitialise. */
@@ -680,7 +675,6 @@ public class BASICLInterpreter implements BASICLInterpreterConstants {
     jj_ntk = -1;
     jj_gen = 0;
     for (int i = 0; i < 29; i++) jj_la1[i] = -1;
-    for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
   /** Constructor with generated Token Manager. */
@@ -697,7 +691,6 @@ public class BASICLInterpreter implements BASICLInterpreterConstants {
     jj_ntk = -1;
     jj_gen = 0;
     for (int i = 0; i < 29; i++) jj_la1[i] = -1;
-    for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
   /** Reinitialise. */
@@ -707,7 +700,6 @@ public class BASICLInterpreter implements BASICLInterpreterConstants {
     jj_ntk = -1;
     jj_gen = 0;
     for (int i = 0; i < 29; i++) jj_la1[i] = -1;
-    for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
   static private Token jj_consume_token(int kind) throws ParseException {
@@ -717,44 +709,11 @@ public class BASICLInterpreter implements BASICLInterpreterConstants {
     jj_ntk = -1;
     if (token.kind == kind) {
       jj_gen++;
-      if (++jj_gc > 100) {
-        jj_gc = 0;
-        for (int i = 0; i < jj_2_rtns.length; i++) {
-          JJCalls c = jj_2_rtns[i];
-          while (c != null) {
-            if (c.gen < jj_gen) c.first = null;
-            c = c.next;
-          }
-        }
-      }
       return token;
     }
     token = oldToken;
     jj_kind = kind;
     throw generateParseException();
-  }
-
-  static private final class LookaheadSuccess extends java.lang.Error { }
-  static final private LookaheadSuccess jj_ls = new LookaheadSuccess();
-  static private boolean jj_scan_token(int kind) {
-    if (jj_scanpos == jj_lastpos) {
-      jj_la--;
-      if (jj_scanpos.next == null) {
-        jj_lastpos = jj_scanpos = jj_scanpos.next = token_source.getNextToken();
-      } else {
-        jj_lastpos = jj_scanpos = jj_scanpos.next;
-      }
-    } else {
-      jj_scanpos = jj_scanpos.next;
-    }
-    if (jj_rescan) {
-      int i = 0; Token tok = token;
-      while (tok != null && tok != jj_scanpos) { i++; tok = tok.next; }
-      if (tok != null) jj_add_error_token(kind, i);
-    }
-    if (jj_scanpos.kind != kind) return true;
-    if (jj_la == 0 && jj_scanpos == jj_lastpos) throw jj_ls;
-    return false;
   }
 
 
@@ -787,33 +746,6 @@ public class BASICLInterpreter implements BASICLInterpreterConstants {
   static private java.util.List<int[]> jj_expentries = new java.util.ArrayList<int[]>();
   static private int[] jj_expentry;
   static private int jj_kind = -1;
-  static private int[] jj_lasttokens = new int[100];
-  static private int jj_endpos;
-
-  static private void jj_add_error_token(int kind, int pos) {
-    if (pos >= 100) return;
-    if (pos == jj_endpos + 1) {
-      jj_lasttokens[jj_endpos++] = kind;
-    } else if (jj_endpos != 0) {
-      jj_expentry = new int[jj_endpos];
-      for (int i = 0; i < jj_endpos; i++) {
-        jj_expentry[i] = jj_lasttokens[i];
-      }
-      jj_entries_loop: for (java.util.Iterator<?> it = jj_expentries.iterator(); it.hasNext();) {
-        int[] oldentry = (int[])(it.next());
-        if (oldentry.length == jj_expentry.length) {
-          for (int i = 0; i < jj_expentry.length; i++) {
-            if (oldentry[i] != jj_expentry[i]) {
-              continue jj_entries_loop;
-            }
-          }
-          jj_expentries.add(jj_expentry);
-          break jj_entries_loop;
-        }
-      }
-      if (pos != 0) jj_lasttokens[(jj_endpos = pos) - 1] = kind;
-    }
-  }
 
   /** Generate ParseException. */
   static public ParseException generateParseException() {
@@ -842,9 +774,6 @@ public class BASICLInterpreter implements BASICLInterpreterConstants {
         jj_expentries.add(jj_expentry);
       }
     }
-    jj_endpos = 0;
-    jj_rescan_token();
-    jj_add_error_token(0, 0);
     int[][] exptokseq = new int[jj_expentries.size()][];
     for (int i = 0; i < jj_expentries.size(); i++) {
       exptokseq[i] = jj_expentries.get(i);
@@ -858,41 +787,6 @@ public class BASICLInterpreter implements BASICLInterpreterConstants {
 
   /** Disable tracing. */
   static final public void disable_tracing() {
-  }
-
-  static private void jj_rescan_token() {
-    jj_rescan = true;
-    for (int i = 0; i < 1; i++) {
-    try {
-      JJCalls p = jj_2_rtns[i];
-      do {
-        if (p.gen > jj_gen) {
-          jj_la = p.arg; jj_lastpos = jj_scanpos = p.first;
-          switch (i) {
-            case 0: jj_3_1(); break;
-          }
-        }
-        p = p.next;
-      } while (p != null);
-      } catch(LookaheadSuccess ls) { }
-    }
-    jj_rescan = false;
-  }
-
-  static private void jj_save(int index, int xla) {
-    JJCalls p = jj_2_rtns[index];
-    while (p.gen > jj_gen) {
-      if (p.next == null) { p = p.next = new JJCalls(); break; }
-      p = p.next;
-    }
-    p.gen = jj_gen + xla - jj_la; p.first = token; p.arg = xla;
-  }
-
-  static final class JJCalls {
-    int gen;
-    Token first;
-    int arg;
-    JJCalls next;
   }
 
 }

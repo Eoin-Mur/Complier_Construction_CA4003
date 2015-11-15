@@ -76,7 +76,7 @@ public class BASICLInterpreter
 			System.out.println("BASICL Interpreter:  Reading from standard input...");
 			interpreter = new BASICLInterpreter(System.in);
 		} 
-		else if (args.length == 1) 
+		else if (args.length >= 1) 
 		{
 			System.out.println("BASICL Interpreter:  Reading from file " + args[0] + "...");
 			try 
@@ -94,19 +94,55 @@ public class BASICLInterpreter
 			System.out.println("BASICL Interpreter:  Usage is one of:");
 			System.out.println("         java BASICLInterpreter < inputfile");
 			System.out.println("OR");
-			System.out.println("         java BASICLInterpreter inputfile");
+			System.out.println("         java BASICLInterpreter inputfile [OPTION]");
+			System.out.println("[OPTION]");
+			System.out.println("         -L : Lexical Analysis of input file");
 			return;
 		}
-		try 
+		if (args.length == 2)
 		{
-			interpreter.Program();
-			System.out.println("BASICL Interpreter: File parse succesfull!");
-		} 
-		catch (ParseException e) 
+			if(args[1].equals("-L"))
+			{
+				System.out.println("------------------------------------------");
+				System.out.println("-------------Lexical Analysis-------------");
+				System.out.println("------------------------------------------");
+				for (Token t = getNextToken(); t.kind!=EOF; t = getNextToken()) 
+				{
+				// Print out the actual text for the constants, identifiers etc.
+					if (t.kind==NUM)
+					{
+						System.out.print("NUM");
+						System.out.print("("+t.image+") ");
+					}
+					else if (t.kind==ID)
+					{
+						System.out.print("ID");
+						System.out.print("("+t.image+") ");
+					}
+					else
+						System.out.print(t.image+" ");
+				}
+			}else{
+				System.out.println("BASICL Interpreter:  Usage is one of:");
+				System.out.println("         java BASICLInterpreter < inputfile");
+				System.out.println("OR");
+				System.out.println("         java BASICLInterpreter inputfile [OPTION]");
+				System.out.println("[OPTION]");
+				System.out.println("         -L : Lexical Analysis of input file");
+			}	
+		}else 
 		{
-			System.out.println(e.getMessage());
-			System.out.println("BASICL Interpreter:  Encountered errors during parse.");
-		}
+			try 
+			{
+				interpreter.Program();
+				System.out.println("BASICL Interpreter: File parse succesfull!");
+			} 
+			catch (ParseException e) 
+			{
+				System.out.println(e.getMessage());
+				System.out.println("BASICL Interpreter:  Encountered errors during parse.");
+			}
+		}	
 	}
 }
 
@@ -220,7 +256,7 @@ void Program() : {}
 
 void Decl() : {}
 {
-	( Var_decl() | Const_decl() )
+	( Var_decl() | Const_decl() ) 
 }
 
 void Var_decl() : {}
@@ -276,15 +312,12 @@ void Statment() : {}
 
 void Expression() : {}
 {
-		LOOKAHEAD(2)
-		<ID> <LEFT_BRACKET> Arg_list() <RIGHT_BRACKET>
-	|	Expression1() ( Opp() Expression1() ) *
-
+		<ID> [ Arg_list() ] Expression1() | Fragment() Expression1()
 }
 
 void Expression1() : {}
 {
-	Fragment()
+	Opp() Expression() | {}
 }
 
 void Opp() : {}
@@ -294,11 +327,10 @@ void Opp() : {}
 
 void Fragment() : {}
 {
-		<ID>
-	|	<TRUE>
+
+		<TRUE>
 	|	<FALSE>
 	|	<NUM>
-	| (<PLUS_SIGN> | <MINUS_SIGN> )
 	| <LEFT_BRACKET> Expression() <RIGHT_BRACKET>
 }
 
@@ -306,9 +338,10 @@ void Fragment() : {}
 void Condition() : {}
 {
 		<NOT> Condition()
-	//|	<ID> <LEFT_BRACKET> Arg_list() <RIGHT_BRACKET>
-	| [<LEFT_BRACKET>]	Expression() ( ( <EQUALS_SIGN> | <NOT_EQUALS_SIGN> | <LESS_THAN> | <GREATER_THAN> | <GREATER_THAN_EQUALS> | <LESS_THAT_EQUALS> | <AND> | <OR>) Expression() [<RIGHT_BRACKET>]) *
-	//|	Condition2() <AND> | <OR>  Condition2()
+	|	Arg_list()
+	//| <LEFT_BRACKET>	Expression() ( ( <EQUALS_SIGN> | <NOT_EQUALS_SIGN> | <LESS_THAN> | <GREATER_THAN> | <GREATER_THAN_EQUALS> | <LESS_THAT_EQUALS> | <AND> | <OR>) Expression() <RIGHT_BRACKET>) *
+	| [<LEFT_BRACKET>] Expression() ( ( <EQUALS_SIGN> | <NOT_EQUALS_SIGN> | <LESS_THAN> | <GREATER_THAN> | <GREATER_THAN_EQUALS> | <LESS_THAT_EQUALS> | <AND> | <OR>) Expression()  [<RIGHT_BRACKET>] ) *
+	//|	Condition() <AND> | <OR>  Condition()
 	//|	<ID> <LEFT_BRACKET> Arg_list() <RIGHT_BRACKET> // this stuff is added above wit the addition to the *
 }
 
@@ -319,5 +352,5 @@ void Ident_list() : {}
 
 void Arg_list() : {}
 {
-	(<ID> ( <COMMA> <ID>)*  | {})
+	<LEFT_BRACKET> (<ID> ( <COMMA> <ID>)*  | {}) <RIGHT_BRACKET>
 }

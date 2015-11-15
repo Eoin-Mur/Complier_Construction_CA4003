@@ -28,6 +28,7 @@ begin
              i := i + 1;
            end;
          else
+
            i := i + 1;
        end;
     end;
@@ -56,4 +57,3 @@ begin
   result := sum;
 
 end
-
