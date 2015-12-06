@@ -2,50 +2,28 @@
 public interface BasicLTreeConstants
 {
   public int JJTPROGRAM = 0;
-  public int JJTDECL = 1;
-  public int JJTVARDECL = 2;
-  public int JJTCONSTDECL = 3;
-  public int JJTFUNCTION = 4;
-  public int JJTPARAMLIST = 5;
-  public int JJTTYPE = 6;
-  public int JJTMAIN = 7;
-  public int JJTSTATMENT = 8;
-  public int JJTEXP = 9;
-  public int JJTEXPRESSION1 = 10;
-  public int JJTADDOP = 11;
-  public int JJTSUBOP = 12;
-  public int JJTMULOP = 13;
-  public int JJTDIVOP = 14;
-  public int JJTOPP = 15;
-  public int JJTFRAGMENT = 16;
-  public int JJTBOOLOPP = 17;
-  public int JJTCONDITION = 18;
-  public int JJTIDENT_LIST = 19;
-  public int JJTARG_LIST = 20;
+  public int JJTVOID = 1;
+  public int JJTFUNCTION = 2;
+  public int JJTASSIGN = 3;
+  public int JJTADD = 4;
+  public int JJTMULT = 5;
+  public int JJTCONDITION = 6;
+  public int JJTID = 7;
+  public int JJTNUM = 8;
+  public int JJTBOOL = 9;
 
 
   public String[] jjtNodeName = {
     "Program",
-    "Decl",
-    "VarDecl",
-    "ConstDecl",
+    "void",
     "Function",
-    "ParamList",
-    "Type",
-    "Main",
-    "Statment",
-    "Exp",
-    "Expression1",
-    "AddOp",
-    "SubOp",
-    "MulOp",
-    "DivOp",
-    "Opp",
-    "Fragment",
-    "BoolOpp",
+    "Assign",
+    "Add",
+    "Mult",
     "Condition",
-    "Ident_list",
-    "Arg_list",
+    "Id",
+    "Num",
+    "Bool",
   };
 }
-/* JavaCC - OriginalChecksum=f702052909eb2134af4ad0ce09a1b67a (do not edit this line) */
+/* JavaCC - OriginalChecksum=242f3f833fad6ae80f914658f6d76fe5 (do not edit this line) */
