@@ -1,0 +1,275 @@
+/*******************************
+***** SECTION 1 - OPTIONS *****
+*******************************/
+
+options { JAVA_UNICODE_ESCAPE = true; }
+
+/*********************************
+***** SECTION 2 - USER CODE *****
+*********************************/
+
+PARSER_BEGIN(BasicL)
+import java.io.*;
+import java.util.*;
+
+public class BasicL 
+{
+	public static void main(String args[]) throws ParseException, FileNotFoundException
+	{
+
+		if (args.length < 1)
+    {
+      System.out.println("Please pass in the filename.");
+      System.exit(1);
+    }
+
+		BasicL parser = new BasicL(new FileInputStream(args[0]));
+
+    SimpleNode root = parser.Program();
+
+    System.out.println("Abstract Syntax Tree:");
+
+    root.dump(" ");
+	}
+}
+
+PARSER_END(BasicL)
+
+/****************************************
+***** SECTION 3 - TOKEN DEFINITIONS *****
+****************************************/
+
+TOKEN_MGR_DECLS :
+{
+	static int commentNesting = 0;
+}
+
+SKIP : /* COMMENTS */
+{
+		<"--" (["a" - "z"] | ["A" - "Z"] | ["0" - "9"] | " ")* ("\n" | "\r" |"\r\n")>
+	|	"/*" { commentNesting++; } : IN_COMMENT
+	
+}
+
+<IN_COMMENT> SKIP :
+{
+		"/*" { commentNesting++; }
+	| "*/" { commentNesting--;
+			if (commentNesting == 0)
+				SwitchTo(DEFAULT);
+			}
+	| <~[]>
+}
+
+SKIP : /*** Ignoring spaces/tabs/newlines ***/
+{
+		" "
+	| "\t"
+	| "\n"
+	| "\r"
+	| "\f"
+}
+
+TOKEN : /* Keywords */ 
+{
+		<AND : "and">
+	|	<BOOL : "bool">
+	|	<CONST : "const">
+	|	<DO : "do">
+	|	<ELSE : "else">
+	|	<FALSE : "false">
+	|	<IF : "if">
+	|	<INT : "int">
+	| <DOUBLE: "double">
+	| <MAIN : "main">
+	|	<NOT : "not">
+	| <OR : "or">
+	|	<RETURN : "return">
+	| <THEN : "then">
+	|	<TRUE : "true">
+	| <VAR : "var">
+	| <VOID : "void">
+	| <WHILE : "while">
+	|	<BEGIN : "begin">
+	| <END : "end">
+}
+
+ TOKEN : /* Identifiers */
+ {
+		<ID : <CHAR> (<DIGIT> | <CHAR> | "_" )* >
+ 	|	<#CHAR : ["a" - "z"] | ["A" - "Z"]>
+ }
+
+TOKEN : /* Numbers */
+{
+		<NUM : (<DIGIT>)+>
+	|	<REAL: ( (<DIGIT>)+ "." (<DIGIT>)*) | ((<DIGIT>)* "." (<DIGIT>)+) >
+	|	<#DIGIT : ["0" - "9"]>
+}
+
+TOKEN : /* Operators and Relations */
+{
+		<PLUS_SIGN : "+">
+	|	<MINUS_SIGN : "-">
+	|	<MULT_SIGN : "*">
+	|	<DIV_SIGN : "/">
+	|	<EQUALS_SIGN : "=">
+	| <NOT_EQUALS_SIGN : "!=">
+	|	<LESS_THAN : "<">
+	| <GREATER_THAN : ">">
+	|	<LESS_THAT_EQUALS : "<=">
+	| <GREATER_THAN_EQUALS : ">=">
+	|	<LEFT_BRACKET : "(">
+	|	<RIGHT_BRACKET : ")">
+	|	<COMMA : ",">
+	|	<SEMICOLON : ";">
+	|	<TYPE_ASSIGN : ":">
+	|	<ASSIGN : ":=">
+}
+
+TOKEN : /* Anything not recognised so far */
+{
+	< OTHER : ~[] >
+}
+
+/***********************************
+***** SECTION 4 - THE GRAMMAR *****
+***********************************/
+
+SimpleNode Program() : {}
+{
+	( Decl() )* // fix due to it decl already being declared one or more times no need to re-declare one or more (*)
+	( Function() )*
+	Main_Prog()
+	{return jjtThis;}
+}
+
+void Decl() : {}
+{
+	( Var_decl() | Const_decl() ) 
+}
+
+void Var_decl() #VarDecl : {}
+{
+	<VAR> Ident_list() <TYPE_ASSIGN> Type() ( <COMMA> Ident_list() <TYPE_ASSIGN> Type() )* <SEMICOLON> 
+}
+
+void Const_decl() #ConstDecl : {}
+{
+	( <CONST> <ID> <TYPE_ASSIGN> Type() <EQUALS_SIGN> Expression() ( <COMMA> <ID> <TYPE_ASSIGN> Type() <EQUALS_SIGN> Expression() )* <SEMICOLON>)
+}
+
+void Function() #Function : {}
+{
+	( Type() <ID> <LEFT_BRACKET> Param_list() <RIGHT_BRACKET> )
+	<BEGIN>
+	( Decl() )* 
+	( Statment() <SEMICOLON> ) *
+	(<RETURN> ( Expression() | {} ) <SEMICOLON>)
+	<END>
+}
+
+void Param_list() #ParamList : {}
+{
+	( <ID> <TYPE_ASSIGN> Type() ( <COMMA> <ID> <TYPE_ASSIGN> Type() )* | {})
+}
+
+void Type() : {Token t;}
+{
+		t =	<INT> 
+		{
+			jjtThis.value = t.image;
+		}
+	| t = <DOUBLE>
+		{
+			jjtThis.value = t.image;
+		}
+	|	t = <BOOL>
+		{
+			jjtThis.value = t.image;
+		}
+	|	t = <VOID>
+		{
+			jjtThis.value = t.image;
+		}
+}
+
+void Main_Prog() #Main : {}
+{
+	<MAIN>
+	<BEGIN>
+	( Decl() )*
+	( Statment() <SEMICOLON>)*
+	<END>
+}
+
+void Statment() #Statment : {}
+{
+		<ID> (<ASSIGN> Expression() | Arg_list() ) 
+	|	<BEGIN> ( Statment() <SEMICOLON> )* <END>
+	|	<IF> Condition() <THEN> Statment() <SEMICOLON> <ELSE> Statment()
+	|	<WHILE> Condition() <DO> Statment()
+	| {} // this will allow you to just stick aload of semicolons in the file and will parse correctly !!!
+}
+
+
+void Expression() #Exp : {}
+{
+		<ID> [ Arg_list() ] Expression1() | Fragment() Expression1()
+}
+
+void Expression1() : {Token t; String name;}
+{
+		t =	<PLUS_SIGN> Expression() {jjtThis.value = t.image;} #AddOp(2)
+	|	t = <MINUS_SIGN> Expression() {jjtThis.value = t.image;} #SubOp(2)
+	|	t = <MULT_SIGN> Expression()	{jjtThis.value = t.image;} #MulOp(2)
+	|	t = <DIV_SIGN> Expression() {jjtThis.value = t.image;} #DivOp(2) 
+	| {}
+}
+
+void Opp() : {}
+{
+		<PLUS_SIGN> 
+	| <MINUS_SIGN> 
+	| <MULT_SIGN> 
+	| <DIV_SIGN>
+}
+
+void Fragment() : {}
+{
+
+		<TRUE>
+	|	<FALSE>
+	|	<NUM>
+	| <REAL>
+	| <LEFT_BRACKET> Expression() <RIGHT_BRACKET>
+}
+
+void BoolOpp() : {}
+{
+		<EQUALS_SIGN> 
+	| <NOT_EQUALS_SIGN> 
+	| <LESS_THAN> 
+	| <GREATER_THAN> 
+	| <GREATER_THAN_EQUALS> 
+	| <LESS_THAT_EQUALS> 
+	| <AND> 
+	| <OR>
+}
+
+
+void Condition() #Condition : {}
+{
+		<NOT> Condition()
+	| [<LEFT_BRACKET>] Expression() ( ( BoolOpp() ) Expression()  [<RIGHT_BRACKET>] ) *
+}
+
+void Ident_list() : {}
+{
+	<ID> ( <COMMA> <ID> )*
+}
+
+void Arg_list() : {}
+{
+	<LEFT_BRACKET> (<ID> ( <COMMA> <ID>)*  | {}) <RIGHT_BRACKET>
+}
