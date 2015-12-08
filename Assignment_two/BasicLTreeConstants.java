@@ -4,19 +4,21 @@ public interface BasicLTreeConstants
   public int JJTPROGRAM = 0;
   public int JJTVOID = 1;
   public int JJTFUNCTION = 2;
-  public int JJTASSIGN = 3;
-  public int JJTADD = 4;
-  public int JJTMULT = 5;
-  public int JJTCONDITION = 6;
-  public int JJTID = 7;
-  public int JJTNUM = 8;
-  public int JJTBOOL = 9;
+  public int JJTMAIN = 3;
+  public int JJTASSIGN = 4;
+  public int JJTADD = 5;
+  public int JJTMULT = 6;
+  public int JJTCONDITION = 7;
+  public int JJTID = 8;
+  public int JJTNUM = 9;
+  public int JJTBOOL = 10;
 
 
   public String[] jjtNodeName = {
     "Program",
     "void",
     "Function",
+    "Main",
     "Assign",
     "Add",
     "Mult",
@@ -26,4 +28,4 @@ public interface BasicLTreeConstants
     "Bool",
   };
 }
-/* JavaCC - OriginalChecksum=242f3f833fad6ae80f914658f6d76fe5 (do not edit this line) */
+/* JavaCC - OriginalChecksum=3ff1b961d898f091bf072c07d74a4ff1 (do not edit this line) */

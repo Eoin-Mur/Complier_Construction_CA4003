@@ -4,6 +4,7 @@ public interface BasicLVisitor
   public Object visit(SimpleNode node, Object data);
   public Object visit(ASTProgram node, Object data);
   public Object visit(ASTFunction node, Object data);
+  public Object visit(ASTMain node, Object data);
   public Object visit(ASTAssign node, Object data);
   public Object visit(ASTAdd node, Object data);
   public Object visit(ASTMult node, Object data);
@@ -12,4 +13,4 @@ public interface BasicLVisitor
   public Object visit(ASTNum node, Object data);
   public Object visit(ASTBool node, Object data);
 }
-/* JavaCC - OriginalChecksum=2701804836c9df701e89264a4112b43e (do not edit this line) */
+/* JavaCC - OriginalChecksum=b10f3a6cb4bff8b108b1bcd758637111 (do not edit this line) */

@@ -249,13 +249,39 @@ void Type() : {}
 	|	<VOID>
 }
 
-void Main_Prog() : {}
-{
+void Main_Prog()       : {/*@bgen(jjtree) Main */
+  ASTMain jjtn000 = new ASTMain(JJTMAIN);
+  boolean jjtc000 = true;
+  jjtree.openNodeScope(jjtn000);
+/*@egen*/}
+{/*@bgen(jjtree) Main */
+        try {
+/*@egen*/
 	<MAIN>
 	<BEGIN>
 	( Decl() )*
 	( Statment() <SEMICOLON>)*
-	<END>
+	<END>/*@bgen(jjtree)*/
+        } catch (Throwable jjte000) {
+          if (jjtc000) {
+            jjtree.clearNodeScope(jjtn000);
+            jjtc000 = false;
+          } else {
+            jjtree.popNode();
+          }
+          if (jjte000 instanceof RuntimeException) {
+            throw (RuntimeException)jjte000;
+          }
+          if (jjte000 instanceof ParseException) {
+            throw (ParseException)jjte000;
+          }
+          throw (Error)jjte000;
+        } finally {
+          if (jjtc000) {
+            jjtree.closeNodeScope(jjtn000, true);
+          }
+        }
+/*@egen*/
 }
 
 void Statment() : {}
@@ -466,14 +492,22 @@ void Indentifier()     : {/*@bgen(jjtree) Id */
 }
 
 void Number()      : {/*@bgen(jjtree) Num */
-  ASTNum jjtn000 = new ASTNum(JJTNUM);
-  boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);
-/*@egen*/}
+                       ASTNum jjtn000 = new ASTNum(JJTNUM);
+                       boolean jjtc000 = true;
+                       jjtree.openNodeScope(jjtn000);
+/*@egen*/ Token t; }
 {/*@bgen(jjtree) Num */
         try {
 /*@egen*/
-	<NUM>/*@bgen(jjtree)*/
+	t = <NUM>/*@bgen(jjtree)*/
+        {
+          jjtree.closeNodeScope(jjtn000, true);
+          jjtc000 = false;
+        }
+/*@egen*/
+	{
+		jjtn000.setName(t.image);
+	}/*@bgen(jjtree)*/
         } finally {
           if (jjtc000) {
             jjtree.closeNodeScope(jjtn000, true);

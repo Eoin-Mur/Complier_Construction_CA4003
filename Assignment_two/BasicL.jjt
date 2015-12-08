@@ -188,7 +188,7 @@ void Type() : {}
 	|	<VOID>
 }
 
-void Main_Prog() : {}
+void Main_Prog() #Main : {}
 {
 	<MAIN>
 	<BEGIN>
@@ -203,7 +203,7 @@ void Statment() : {}
 			Indentifier() (<ASSIGN> Expression() | Arg_list() ) 
 		) #Assign(2)	
 	|	<BEGIN> ( Statment() <SEMICOLON> )* <END>
-	|	<IF> Condition() <THEN> Statment() <SEMICOLON> <ELSE> Statment() 
+	|	<IF> Condition() <THEN> Statment() <SEMICOLON> <ELSE> Statment() )  
 	|	<WHILE> Condition() <DO> Statment()
 	| {} // this will allow you to just stick aload of semicolons in the file and will parse correctly !!!
 }
@@ -279,9 +279,12 @@ void Indentifier() #Id : { Token t; }
   }
 }
 
-void Number() #Num : {}
+void Number() #Num : { Token t; }
 {
-	<NUM>
+	t = <NUM>
+	{
+		jjtThis.setName(t.image);
+	}
 }
 
 void Bool() # Bool : {}
