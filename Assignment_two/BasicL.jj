@@ -562,7 +562,7 @@ void Fragment() : {}
 		Indentifier() 
 	|	Bool()	
 	|	Number()
-	| <REAL>
+	| Real()
 	| <LEFT_BRACKET> Expression() <RIGHT_BRACKET>
 }
 
@@ -747,6 +747,28 @@ void Bool()       : {/*@bgen(jjtree) Bool */
                           jjtree.closeNodeScope(jjtn000, true);
                           jjtc000 = false;
                         }
+/*@egen*/ {jjtn000.setName(t.image);}/*@bgen(jjtree)*/
+        } finally {
+          if (jjtc000) {
+            jjtree.closeNodeScope(jjtn000, true);
+          }
+        }
+/*@egen*/
+}
+
+void Real()       : {/*@bgen(jjtree) Real */
+                      ASTReal jjtn000 = new ASTReal(JJTREAL);
+                      boolean jjtc000 = true;
+                      jjtree.openNodeScope(jjtn000);
+/*@egen*/ Token t;}
+{/*@bgen(jjtree) Real */
+        try {
+/*@egen*/
+	t = <REAL>/*@bgen(jjtree)*/
+                   {
+                     jjtree.closeNodeScope(jjtn000, true);
+                     jjtc000 = false;
+                   }
 /*@egen*/ {jjtn000.setName(t.image);}/*@bgen(jjtree)*/
         } finally {
           if (jjtc000) {

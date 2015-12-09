@@ -18,7 +18,8 @@ public interface BasicLTreeConstants
   public int JJTID = 14;
   public int JJTNUM = 15;
   public int JJTBOOL = 16;
-  public int JJTFUNCTIONCALL = 17;
+  public int JJTREAL = 17;
+  public int JJTFUNCTIONCALL = 18;
 
 
   public String[] jjtNodeName = {
@@ -39,7 +40,8 @@ public interface BasicLTreeConstants
     "Id",
     "Num",
     "Bool",
+    "Real",
     "FunctionCall",
   };
 }
-/* JavaCC - OriginalChecksum=0cdcde0fc4a1ce213d02a41a63552faa (do not edit this line) */
+/* JavaCC - OriginalChecksum=70e36bfb10679304419afebbed56bfa4 (do not edit this line) */

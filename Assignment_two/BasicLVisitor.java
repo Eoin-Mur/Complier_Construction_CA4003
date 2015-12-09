@@ -18,6 +18,7 @@ public interface BasicLVisitor
   public Object visit(ASTId node, Object data);
   public Object visit(ASTNum node, Object data);
   public Object visit(ASTBool node, Object data);
+  public Object visit(ASTReal node, Object data);
   public Object visit(ASTFunctionCall node, Object data);
 }
-/* JavaCC - OriginalChecksum=292ebe0f98811403231eec108d92ec37 (do not edit this line) */
+/* JavaCC - OriginalChecksum=fa1d572bd0afa01f6f12eb68d21a6ec6 (do not edit this line) */

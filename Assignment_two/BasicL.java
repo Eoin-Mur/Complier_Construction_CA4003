@@ -684,7 +684,7 @@ public class BasicL/*@bgen(jjtree)*/implements BasicLTreeConstants, BasicLConsta
       Number();
       break;
     case REAL:
-      jj_consume_token(REAL);
+      Real();
       break;
     case LEFT_BRACKET:
       jj_consume_token(LEFT_BRACKET);
@@ -953,6 +953,23 @@ public class BasicL/*@bgen(jjtree)*/implements BasicLTreeConstants, BasicLConsta
     }
   }
 
+  static final public void Real() throws ParseException {
+                     /*@bgen(jjtree) Real */
+                      ASTReal jjtn000 = new ASTReal(JJTREAL);
+                      boolean jjtc000 = true;
+                      jjtree.openNodeScope(jjtn000);Token t;
+    try {
+      t = jj_consume_token(REAL);
+                     jjtree.closeNodeScope(jjtn000, true);
+                     jjtc000 = false;
+                    jjtn000.setName(t.image);
+    } finally {
+          if (jjtc000) {
+            jjtree.closeNodeScope(jjtn000, true);
+          }
+    }
+  }
+
   static final public void FunctionCall() throws ParseException {
                                      /*@bgen(jjtree) FunctionCall */
   ASTFunctionCall jjtn000 = new ASTFunctionCall(JJTFUNCTIONCALL);
@@ -994,14 +1011,14 @@ public class BasicL/*@bgen(jjtree)*/implements BasicLTreeConstants, BasicLConsta
     return false;
   }
 
-  static private boolean jj_3R_16() {
-    if (jj_3R_17()) return true;
-    if (jj_3R_18()) return true;
+  static private boolean jj_3R_18() {
+    if (jj_scan_token(LEFT_BRACKET)) return true;
     return false;
   }
 
-  static private boolean jj_3R_18() {
-    if (jj_scan_token(LEFT_BRACKET)) return true;
+  static private boolean jj_3R_16() {
+    if (jj_3R_17()) return true;
+    if (jj_3R_18()) return true;
     return false;
   }
 

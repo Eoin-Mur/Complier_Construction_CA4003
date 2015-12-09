@@ -255,7 +255,7 @@ void Fragment() : {}
 		Indentifier() 
 	|	Bool()	
 	|	Number()
-	| <REAL>
+	| Real()
 	| <LEFT_BRACKET> Expression() <RIGHT_BRACKET>
 }
 
@@ -312,6 +312,11 @@ void Bool() #Bool : {Token t;}
 {
 	t =	<TRUE> {jjtThis.setName(t.image);}
 	| t =	<FALSE> {jjtThis.setName(t.image);}
+}
+
+void Real() #Real : { Token t;}
+{
+	t = <REAL> {jjtThis.setName(t.image);}
 }
 
 void FunctionCall() #FunctionCall : {}
