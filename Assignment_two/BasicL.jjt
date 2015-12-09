@@ -225,7 +225,8 @@ void Statment() : {}
 
 void Expression() : {}
 {
-		AddExpression()
+	AddExpression()
+		
 }
 
 void AddExpression() : {}
@@ -246,7 +247,7 @@ void Fragment() : {}
 {
 
 		Bool()
-	| Indentifier() [ Arg_list() ]
+	| Indentifier() [Arg_list()]
 	|	Number()
 	| <REAL>
 	| <LEFT_BRACKET> Expression() <RIGHT_BRACKET>
@@ -305,4 +306,9 @@ void Bool() #Bool : {Token t;}
 {
 	t =	<TRUE> {jjtThis.setName(t.image);}
 	| t =	<FALSE> {jjtThis.setName(t.image);}
+}
+
+void FunctionCall() #FunctionCall : {}
+{
+	Indentifier() [ Arg_list() ]
 }
