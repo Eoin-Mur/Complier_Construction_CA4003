@@ -3,29 +3,41 @@ public interface BasicLTreeConstants
 {
   public int JJTPROGRAM = 0;
   public int JJTVOID = 1;
-  public int JJTFUNCTION = 2;
-  public int JJTMAIN = 3;
-  public int JJTASSIGN = 4;
-  public int JJTADD = 5;
-  public int JJTMULT = 6;
-  public int JJTCONDITION = 7;
-  public int JJTID = 8;
-  public int JJTNUM = 9;
-  public int JJTBOOL = 10;
+  public int JJTDECL = 2;
+  public int JJTCONSTDECL = 3;
+  public int JJTFUNCTION = 4;
+  public int JJTFUNCTION_DECL = 5;
+  public int JJTPARAMS = 6;
+  public int JJTTYPE = 7;
+  public int JJTMAIN = 8;
+  public int JJTASSIGN = 9;
+  public int JJTADD = 10;
+  public int JJTMULT = 11;
+  public int JJTBOOLOPP = 12;
+  public int JJTCONDITION = 13;
+  public int JJTID = 14;
+  public int JJTNUM = 15;
+  public int JJTBOOL = 16;
 
 
   public String[] jjtNodeName = {
     "Program",
     "void",
+    "Decl",
+    "ConstDecl",
     "Function",
+    "Function_Decl",
+    "Params",
+    "Type",
     "Main",
     "Assign",
     "Add",
     "Mult",
+    "BoolOpp",
     "Condition",
     "Id",
     "Num",
     "Bool",
   };
 }
-/* JavaCC - OriginalChecksum=3ff1b961d898f091bf072c07d74a4ff1 (do not edit this line) */
+/* JavaCC - OriginalChecksum=cca042177bd3b5372dd898965f811455 (do not edit this line) */

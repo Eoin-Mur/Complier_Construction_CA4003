@@ -20,8 +20,12 @@ import java.util.*;
 
 public class BasicL
 {
+	public static Hashtable ST = new Hashtable();
 	public static void main(String args[]) throws ParseException, FileNotFoundException
 	{
+
+		String temp;
+		String temp2;
 
 		if (args.length < 1)
     {
@@ -36,6 +40,8 @@ public class BasicL
     System.out.println("Abstract Syntax Tree:");
 
     root.dump(" ");
+		
+
 	}
 }
 
@@ -152,12 +158,17 @@ ASTProgram Program() #Program : {}
 
 void Decl() : {}
 {
-	( Var_decl() | Const_decl() ) 
+	(
+	 	Var_decl() 
+	) #Decl(>1)
+	| (
+			Const_decl()
+		)	#ConstDecl(>1)
 }
 
 void Var_decl() : {}
 {
-	<VAR> Ident_list() <TYPE_ASSIGN> Type() ( <COMMA> Ident_list() <TYPE_ASSIGN> Type() )* <SEMICOLON>
+	(	<VAR> Ident_list() <TYPE_ASSIGN> Type() ( <COMMA> Ident_list() <TYPE_ASSIGN> Type() )* ) <SEMICOLON>
 }
 
 void Const_decl() : {}
@@ -167,7 +178,7 @@ void Const_decl() : {}
 
 void Function() #Function : {}
 {
-	( Type() Indentifier() <LEFT_BRACKET> Param_list() <RIGHT_BRACKET> )
+	( Type() Indentifier() <LEFT_BRACKET> Param_list() <RIGHT_BRACKET> ) #Function_Decl(3)
 	<BEGIN>
 	( Decl() )* 
 	( Statment() <SEMICOLON> ) *
@@ -177,15 +188,18 @@ void Function() #Function : {}
 
 void Param_list() : {}
 {
-	( Indentifier() <TYPE_ASSIGN> Type() ( <COMMA> Indentifier() <TYPE_ASSIGN> Type() )* | {})
+	(
+		Indentifier() <TYPE_ASSIGN> Type() ( <COMMA> Indentifier() <TYPE_ASSIGN> Type() )* 
+	) #Params(>1)
+	| {}
 }
 
-void Type() : {}
+void Type() #Type : {Token t;}
 {
-		<INT>
-	| <DOUBLE>
-	|	<BOOL>
-	|	<VOID>
+	t =	<INT>  {jjtThis.setName(t.image);} 
+	| t = <DOUBLE> {jjtThis.setName(t.image);} 
+	|	t = <BOOL> {jjtThis.setName(t.image);} 
+	|	t =<VOID> {jjtThis.setName(t.image);}
 }
 
 void Main_Prog() #Main : {}
@@ -203,7 +217,7 @@ void Statment() : {}
 			Indentifier() (<ASSIGN> Expression() | Arg_list() ) 
 		) #Assign(2)	
 	|	<BEGIN> ( Statment() <SEMICOLON> )* <END>
-	|	<IF> Condition() <THEN> Statment() <SEMICOLON> <ELSE> Statment() )  
+	|	<IF> Condition() <THEN> Statment() <SEMICOLON> <ELSE> Statment()   
 	|	<WHILE> Condition() <DO> Statment()
 	| {} // this will allow you to just stick aload of semicolons in the file and will parse correctly !!!
 }
@@ -238,17 +252,17 @@ void Fragment() : {}
 	| <LEFT_BRACKET> Expression() <RIGHT_BRACKET>
 }
 
-void BoolOpp() : {}
+void BoolOpp() #BoolOpp : { Token t; }
 {
 	(
-			<EQUALS_SIGN> 
-		| <NOT_EQUALS_SIGN> 
-		| <LESS_THAN> 
-		| <GREATER_THAN> 
-		| <GREATER_THAN_EQUALS> 
-		| <LESS_THAT_EQUALS> 
-		| <AND> 
-		| <OR>
+			t = <EQUALS_SIGN> {jjtThis.setName(t.image);} 
+		| t = <NOT_EQUALS_SIGN> {jjtThis.setName(t.image);} 
+		| t = <LESS_THAN> {jjtThis.setName(t.image);} 
+		| t = <GREATER_THAN> {jjtThis.setName(t.image);} 
+		| t = <GREATER_THAN_EQUALS> {jjtThis.setName(t.image);} 
+		| t = <LESS_THAT_EQUALS> {jjtThis.setName(t.image);} 
+		| t = <AND> {jjtThis.setName(t.image);} 
+		| t = <OR> {jjtThis.setName(t.image);} 
 	)	
 }
 
@@ -287,8 +301,8 @@ void Number() #Num : { Token t; }
 	}
 }
 
-void Bool() # Bool : {}
+void Bool() #Bool : {Token t;}
 {
-		<TRUE>
-	|	<FALSE>
+	t =	<TRUE> {jjtThis.setName(t.image);}
+	| t =	<FALSE> {jjtThis.setName(t.image);}
 }
