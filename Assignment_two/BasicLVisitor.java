@@ -5,8 +5,8 @@ public interface BasicLVisitor
   public Object visit(ASTProgram node, Object data);
   public Object visit(ASTDecl node, Object data);
   public Object visit(ASTConstDecl node, Object data);
-  public Object visit(ASTFunction node, Object data);
   public Object visit(ASTFunction_Decl node, Object data);
+  public Object visit(ASTFunction node, Object data);
   public Object visit(ASTParams node, Object data);
   public Object visit(ASTType node, Object data);
   public Object visit(ASTMain node, Object data);
@@ -20,4 +20,4 @@ public interface BasicLVisitor
   public Object visit(ASTBool node, Object data);
   public Object visit(ASTFunctionCall node, Object data);
 }
-/* JavaCC - OriginalChecksum=72154684e4854f57237b7b427ec2c441 (do not edit this line) */
+/* JavaCC - OriginalChecksum=292ebe0f98811403231eec108d92ec37 (do not edit this line) */

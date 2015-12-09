@@ -5,8 +5,8 @@ public interface BasicLTreeConstants
   public int JJTVOID = 1;
   public int JJTDECL = 2;
   public int JJTCONSTDECL = 3;
-  public int JJTFUNCTION = 4;
-  public int JJTFUNCTION_DECL = 5;
+  public int JJTFUNCTION_DECL = 4;
+  public int JJTFUNCTION = 5;
   public int JJTPARAMS = 6;
   public int JJTTYPE = 7;
   public int JJTMAIN = 8;
@@ -26,8 +26,8 @@ public interface BasicLTreeConstants
     "void",
     "Decl",
     "ConstDecl",
-    "Function",
     "Function_Decl",
+    "Function",
     "Params",
     "Type",
     "Main",
@@ -42,4 +42,4 @@ public interface BasicLTreeConstants
     "FunctionCall",
   };
 }
-/* JavaCC - OriginalChecksum=38d46098b8e7fca800557e212fe55238 (do not edit this line) */
+/* JavaCC - OriginalChecksum=0cdcde0fc4a1ce213d02a41a63552faa (do not edit this line) */

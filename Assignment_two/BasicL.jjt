@@ -151,7 +151,7 @@ TOKEN : /* Anything not recognised so far */
 ASTProgram Program() #Program : {}
 {
 	( Decl() )* // fix due to it decl already being declared one or more times no need to re-declare one or more (*)
-	( Function() )*
+	( Function_Decl() )*
 	Main_Prog()
 	{ return jjtThis; }
 }
@@ -176,9 +176,14 @@ void Const_decl() : {}
 	( <CONST> Indentifier() <TYPE_ASSIGN> Type() <EQUALS_SIGN> Expression() ( <COMMA> Indentifier() <TYPE_ASSIGN> Type() <EQUALS_SIGN> Expression() )* <SEMICOLON>)
 }
 
-void Function() #Function : {}
+void Function_Decl() #Function_Decl : {}
 {
-	( Type() Indentifier() <LEFT_BRACKET> Param_list() <RIGHT_BRACKET> ) #Function_Decl(3)
+	( Type() Indentifier() <LEFT_BRACKET> Param_list() <RIGHT_BRACKET> )
+	( Function() )
+}
+
+void Function() #Function	 : {}
+{
 	<BEGIN>
 	( Decl() )* 
 	( Statment() <SEMICOLON> ) *
@@ -223,10 +228,12 @@ void Statment() : {}
 }
 
 
+//fixed expression to allow for the function call in condition to work properly!
 void Expression() : {}
 {
-	AddExpression()
-		
+	LOOKAHEAD(2)
+	FunctionCall()
+	| AddExpression()
 }
 
 void AddExpression() : {}
@@ -245,9 +252,8 @@ void MultExpression() : {}
 
 void Fragment() : {}
 {
-
-		Bool()
-	| Indentifier() [Arg_list()]
+		Indentifier() 
+	|	Bool()	
 	|	Number()
 	| <REAL>
 	| <LEFT_BRACKET> Expression() <RIGHT_BRACKET>
@@ -273,7 +279,7 @@ void Condition() : {}
 		<NOT> Condition()
 	| (
 		 [<LEFT_BRACKET>] Expression() ( ( BoolOpp() ) Expression()  [<RIGHT_BRACKET>] ) *
-		) #Condition(>1)
+		) #Condition(>0)
 }
 
 void Ident_list() : {}
@@ -310,5 +316,5 @@ void Bool() #Bool : {Token t;}
 
 void FunctionCall() #FunctionCall : {}
 {
-	Indentifier() [ Arg_list() ]
+	Indentifier() Arg_list()
 }

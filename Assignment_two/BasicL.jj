@@ -161,7 +161,7 @@ ASTProgram Program()          : {/*@bgen(jjtree) Program */
         try {
 /*@egen*/
 	( Decl() )* // fix due to it decl already being declared one or more times no need to re-declare one or more (*)
-	( Function() )*
+	( Function_Decl() )*
 	Main_Prog()/*@bgen(jjtree)*/
         {
           jjtree.closeNodeScope(jjtn000, true);
@@ -265,42 +265,46 @@ void Const_decl() : {}
 	( <CONST> Indentifier() <TYPE_ASSIGN> Type() <EQUALS_SIGN> Expression() ( <COMMA> Indentifier() <TYPE_ASSIGN> Type() <EQUALS_SIGN> Expression() )* <SEMICOLON>)
 }
 
-void Function()           : {/*@bgen(jjtree) Function */
+void Function_Decl()                : {/*@bgen(jjtree) Function_Decl */
+  ASTFunction_Decl jjtn000 = new ASTFunction_Decl(JJTFUNCTION_DECL);
+  boolean jjtc000 = true;
+  jjtree.openNodeScope(jjtn000);
+/*@egen*/}
+{/*@bgen(jjtree) Function_Decl */
+        try {
+/*@egen*/
+	( Type() Indentifier() <LEFT_BRACKET> Param_list() <RIGHT_BRACKET> )
+	( Function() )/*@bgen(jjtree)*/
+        } catch (Throwable jjte000) {
+          if (jjtc000) {
+            jjtree.clearNodeScope(jjtn000);
+            jjtc000 = false;
+          } else {
+            jjtree.popNode();
+          }
+          if (jjte000 instanceof RuntimeException) {
+            throw (RuntimeException)jjte000;
+          }
+          if (jjte000 instanceof ParseException) {
+            throw (ParseException)jjte000;
+          }
+          throw (Error)jjte000;
+        } finally {
+          if (jjtc000) {
+            jjtree.closeNodeScope(jjtn000, true);
+          }
+        }
+/*@egen*/
+}
+
+void Function()          	 : {/*@bgen(jjtree) Function */
   ASTFunction jjtn000 = new ASTFunction(JJTFUNCTION);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
 /*@egen*/}
 {/*@bgen(jjtree) Function */
         try {
-/*@egen*//*@bgen(jjtree) #Function_Decl( 3) */
-        {
-          ASTFunction_Decl jjtn001 = new ASTFunction_Decl(JJTFUNCTION_DECL);
-          boolean jjtc001 = true;
-          jjtree.openNodeScope(jjtn001);
-        }
-        try {
 /*@egen*/
-	( Type() Indentifier() <LEFT_BRACKET> Param_list() <RIGHT_BRACKET> )/*@bgen(jjtree)*/
-        } catch (Throwable jjte001) {
-          if (jjtc001) {
-            jjtree.clearNodeScope(jjtn001);
-            jjtc001 = false;
-          } else {
-            jjtree.popNode();
-          }
-          if (jjte001 instanceof RuntimeException) {
-            throw (RuntimeException)jjte001;
-          }
-          if (jjte001 instanceof ParseException) {
-            throw (ParseException)jjte001;
-          }
-          throw (Error)jjte001;
-        } finally {
-          if (jjtc001) {
-            jjtree.closeNodeScope(jjtn001,  3);
-          }
-        }
-/*@egen*/                  
 	<BEGIN>
 	( Decl() )* 
 	( Statment() <SEMICOLON> ) *
@@ -477,10 +481,12 @@ void Statment() : {}
 }
 
 
+//fixed expression to allow for the function call in condition to work properly!
 void Expression() : {}
 {
-	AddExpression()
-		
+	LOOKAHEAD(2)
+	FunctionCall()
+	| AddExpression()
 }
 
 void AddExpression() : {}
@@ -553,9 +559,8 @@ void MultExpression() : {}
 
 void Fragment() : {}
 {
-
-		Bool()
-	| Indentifier() [Arg_list()]
+		Indentifier() 
+	|	Bool()	
 	|	Number()
 	| <REAL>
 	| <LEFT_BRACKET> Expression() <RIGHT_BRACKET>
@@ -631,7 +636,7 @@ void BoolOpp()          : {/*@bgen(jjtree) BoolOpp */
 void Condition() : {}
 {
 		<NOT> Condition()
-	|/*@bgen(jjtree) #Condition(> 1) */
+	|/*@bgen(jjtree) #Condition(> 0) */
           {
             ASTCondition jjtn001 = new ASTCondition(JJTCONDITION);
             boolean jjtc001 = true;
@@ -657,7 +662,7 @@ void Condition() : {}
             throw (Error)jjte001;
           } finally {
             if (jjtc001) {
-              jjtree.closeNodeScope(jjtn001, jjtree.nodeArity() > 1);
+              jjtree.closeNodeScope(jjtn001, jjtree.nodeArity() > 0);
             }
           }
 /*@egen*/               
@@ -759,7 +764,7 @@ void FunctionCall()               : {/*@bgen(jjtree) FunctionCall */
 {/*@bgen(jjtree) FunctionCall */
         try {
 /*@egen*/
-	Indentifier() [ Arg_list() ]/*@bgen(jjtree)*/
+	Indentifier() Arg_list()/*@bgen(jjtree)*/
         } catch (Throwable jjte000) {
           if (jjtc000) {
             jjtree.clearNodeScope(jjtn000);
