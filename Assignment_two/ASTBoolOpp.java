@@ -2,7 +2,6 @@
 /* JavaCCOptions:MULTI=true,NODE_USES_PARSER=false,VISITOR=true,TRACK_TOKENS=false,NODE_PREFIX=AST,NODE_EXTENDS=,NODE_FACTORY=,SUPPORT_CLASS_VISIBILITY_PUBLIC=true */
 public
 class ASTBoolOpp extends SimpleNode {
-  private String name;
   public ASTBoolOpp(int id) {
     super(id);
   }
@@ -15,14 +14,6 @@ class ASTBoolOpp extends SimpleNode {
   /** Accept the visitor. **/
   public Object jjtAccept(BasicLVisitor visitor, Object data) {
     return visitor.visit(this, data);
-  }
-
-  public void setName(String n) {
-    name = n;
-  }
-
-  public String toString() {
-    return "BoolOP: "+name;
   }
 }
 /* JavaCC - OriginalChecksum=51c06898695a6fc8e59062223988686a (do not edit this line) */

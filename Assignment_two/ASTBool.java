@@ -2,7 +2,6 @@
 /* JavaCCOptions:MULTI=true,NODE_USES_PARSER=false,VISITOR=true,TRACK_TOKENS=false,NODE_PREFIX=AST,NODE_EXTENDS=,NODE_FACTORY=,SUPPORT_CLASS_VISIBILITY_PUBLIC=true */
 public
 class ASTBool extends SimpleNode {
-  private String name;
   public ASTBool(int id) {
     super(id);
   }
@@ -15,14 +14,6 @@ class ASTBool extends SimpleNode {
   /** Accept the visitor. **/
   public Object jjtAccept(BasicLVisitor visitor, Object data) {
     return visitor.visit(this, data);
-  }
-
-  public void setName(String n) {
-    name = n;
-  }
-
-  public String toString() {
-    return "Bool: " + name;
   }
 }
 /* JavaCC - OriginalChecksum=caf32a5568dcef5787b9de72db3a4671 (do not edit this line) */

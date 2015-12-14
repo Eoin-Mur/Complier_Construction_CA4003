@@ -2,7 +2,6 @@
 /* JavaCCOptions:MULTI=true,NODE_USES_PARSER=false,VISITOR=true,TRACK_TOKENS=false,NODE_PREFIX=AST,NODE_EXTENDS=,NODE_FACTORY=,SUPPORT_CLASS_VISIBILITY_PUBLIC=true */
 public
 class ASTId extends SimpleNode {
-  private String name;
 
   public ASTId(int id) {
     super(id);
@@ -16,14 +15,6 @@ class ASTId extends SimpleNode {
   /** Accept the visitor. **/
   public Object jjtAccept(BasicLVisitor visitor, Object data) {
     return visitor.visit(this, data);
-  }
-
-  public void setName(String n) {
-    name = n;
-  }
-
-  public String toString() {
-    return "Id: " + name;
   }
 }
 /* JavaCC - OriginalChecksum=c1648549e7d60cc9e6f8a219687b6e61 (do not edit this line) */
